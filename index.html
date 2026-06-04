@@ -1,374 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>lovetosleep – Two Sides, One You</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
-  <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
-    :root{
-        --sleep-bg:#1b2540;
-        --sleep-bg2:#131d34;
-        --sleep-card:#0f1828;
-        --sleep-ink:#cddaee;
-        --sleep-muted:#7a9abf;
-        --love-bg:#f5ede8;
-        --love-bg2:#edddd4;
-        --love-card:#e4cec3;
-        --love-ink:#7a4535;
-        --love-muted:#a86858;
-        --ease:.72s cubic-bezier(.4,0,.2,1);
-    }
-
-    html{scroll-behavior:smooth}
-
-    body{
-        font-family:'Montserrat',sans-serif;
-        min-height:100vh;
-        overflow-x:hidden;
-        background:var(--sleep-bg);
-        color:var(--sleep-ink);
-        transition:background var(--ease),color var(--ease);
-    }
-    body.love{
-        background:var(--love-bg);
-        color:var(--love-ink);
-    }
-
-    /* ── HEADER ── */
-    header{
-        position:relative;
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        padding:48px 24px 16px;
-    }
-
-    /* HAMBURGER — top right */
-    .ham{
-        position:absolute;top:24px;right:24px;
-        width:46px;height:46px;
-        background:none;border:none;cursor:pointer;
-        display:flex;flex-direction:column;justify-content:center;gap:6px;
-        padding:8px;border-radius:50%;z-index:200;
-        transition:background .3s;
-    }
-    .ham:hover{background:rgba(128,128,128,.12)}
-    .ham span{
-        display:block;height:1.5px;border-radius:2px;
-        transition:background .5s;
-    }
-    body:not(.love) .ham span{background:var(--sleep-muted)}
-    body.love .ham span{background:var(--love-muted)}
-
-    /* MAIN LOGO IMAGE */
-    .logo-img{
-        width:380px;
-        max-width:90vw;
-        height:auto;
-        display:block;
-        margin-bottom:24px;
-    }
-
-    /* ── TOGGLE ── */
-    .tog-row{
-        display:flex;align-items:center;gap:22px;
-        margin-bottom:50px;
-    }
-    .tog-label{
-        font-family:'Cormorant Garamond',serif;
-        font-size:1.05rem;font-weight:500;
-        letter-spacing:.18em;text-transform:uppercase;
-        transition:opacity .5s,color .5s;
-    }
-    .lbl-sleep{color:var(--sleep-muted);opacity:1}
-    .lbl-love{color:var(--love-muted);opacity:.38}
-    body.love .lbl-sleep{opacity:.38}
-    body.love .lbl-love{opacity:1}
-
-    .tog-btn{
-        position:relative;width:54px;height:28px;
-        background:none;border:none;cursor:pointer;padding:0;
-    }
-    .tog-track{
-        width:54px;height:28px;border-radius:14px;
-        background:var(--sleep-bg2);
-        border:1.5px solid var(--sleep-muted);
-        transition:background .55s,border-color .55s;
-    }
-    body.love .tog-track{
-        background:#c08878;
-        border-color:#c08878;
-    }
-    .tog-thumb{
-        position:absolute;top:4px;left:30px;
-        width:20px;height:20px;border-radius:50%;
-        background:var(--sleep-muted);
-        box-shadow:0 1px 5px rgba(0,0,0,.28);
-        transition:left .55s cubic-bezier(.4,0,.2,1),background .55s;
-    }
-    body.love .tog-thumb{left:4px;background:#fff}
-
-    /* ── SPLIT PANELS ── */
-    .split{display:flex;min-height:100vh}
-
-    .panel{
-        flex:1;
-        display:flex;flex-direction:column;
-        align-items:center;justify-content:flex-start;
-        padding:50px 28px 60px;
-        overflow:hidden;
-        transition:flex var(--ease),opacity var(--ease);
-    }
-    .panel-sleep{background:var(--sleep-bg)}
-    .panel-love{background:var(--love-bg)}
-
-    /* Sleep expanded by default */
-    body:not(.love) .panel-sleep{flex:2.5;opacity:1}
-    body:not(.love) .panel-love{flex:.5;opacity:.25}
-    body.love .panel-sleep{flex:.5;opacity:.25}
-    body.love .panel-love{flex:2.5;opacity:1}
-
-    .divider{
-        width:1px;flex-shrink:0;align-self:stretch;
-        background:linear-gradient(to bottom,
-                                       transparent,rgba(150,150,150,.2) 30%,
-                                       rgba(150,150,150,.2) 70%,transparent);
-    }
-
-    /* Section logo image */
-    .section-logo{
-        width:220px;
-        max-width:85%;
-        height:auto;
-        display:block;
-        margin-bottom:28px;
-        border-radius:12px;
-    }
-
-    /* Product grid */
-    .pgrid{
-        display:grid;grid-template-columns:repeat(2,1fr);
-        gap:13px;width:100%;max-width:380px;
-        margin-top:8px;
-    }
-    .pcard{
-        border-radius:14px;aspect-ratio:3/4;
-        display:flex;flex-direction:column;
-        align-items:center;justify-content:flex-end;
-        padding:14px;cursor:pointer;
-        transition:transform .3s,box-shadow .3s;
-    }
-    .pcard:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,.22)}
-    .panel-sleep .pcard{background:var(--sleep-card)}
-    .panel-love .pcard{background:var(--love-card)}
-
-    .picon{font-size:2.1rem;margin-bottom:8px;opacity:.7}
-    .pname{
-        font-family:'Cormorant Garamond',serif;
-        font-size:.98rem;font-weight:400;
-        letter-spacing:.05em;text-align:center;
-    }
-    .panel-sleep .pname{color:var(--sleep-ink)}
-    .panel-love .pname{color:var(--love-ink)}
-    .pprice{font-size:.67rem;letter-spacing:.1em;margin-top:3px;font-weight:300}
-    .panel-sleep .pprice{color:var(--sleep-muted)}
-    .panel-love .pprice{color:var(--love-muted)}
-
-    .shop-btn{
-        margin-top:26px;padding:13px 34px;
-        border:none;border-radius:30px;
-        font-family:'Montserrat',sans-serif;
-        font-size:.68rem;font-weight:500;
-        letter-spacing:.24em;text-transform:uppercase;
-        cursor:pointer;
-        transition:transform .3s,box-shadow .3s;
-    }
-    .shop-btn:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,0,0,.2)}
-    .panel-sleep .shop-btn{background:var(--sleep-muted);color:#fff}
-    .panel-love .shop-btn{background:#c08878;color:#fff}
-
-    /* ── NAV OVERLAY ── */
-    .nav-ov{
-        position:fixed;inset:0;z-index:999;
-        display:flex;flex-direction:column;
-        align-items:center;justify-content:center;gap:30px;
-        opacity:0;pointer-events:none;
-        transition:opacity .4s;
-    }
-    .nav-ov.open{opacity:1;pointer-events:all}
-    body:not(.love) .nav-ov{background:rgba(13,18,28,.97)}
-    body.love .nav-ov{background:rgba(245,237,232,.97)}
-
-    .nav-close{
-        position:absolute;top:28px;right:24px;
-        background:none;border:none;font-size:1.8rem;cursor:pointer;
-        transition:color .3s;
-    }
-    body:not(.love) .nav-close{color:var(--sleep-muted)}
-    body.love .nav-close{color:var(--love-muted)}
-
-    .nav-link{
-        font-family:'Cormorant Garamond',serif;
-        font-size:2rem;font-weight:300;
-        letter-spacing:.15em;text-transform:uppercase;
-        text-decoration:none;opacity:.75;transition:opacity .3s;
-    }
-    .nav-link:hover{opacity:1}
-    body:not(.love) .nav-link{color:var(--sleep-ink)}
-    body.love .nav-link{color:var(--love-ink)}
-
-    /* ── FOOTER ── */
-    footer{
-        text-align:center;padding:24px;
-        font-size:.58rem;letter-spacing:.22em;
-        text-transform:uppercase;opacity:.35;font-weight:300;
-    }
-
-    @media(max-width:700px){
-        .split{flex-direction:column}
-        .divider{
-              width:60%;height:1px;align-self:center;
-              background:linear-gradient(to right,transparent,rgba(150,150,150,.2),transparent);
-        }
-        .logo-img{width:300px}
-        body:not(.love) .panel-love,
-        body.love .panel-sleep{min-height:32vh}
-    }
-    </style>
-  </head>
-  <body id="B">
-
-    <!-- NAV OVERLAY -->
-    <nav class="nav-ov" id="navOv">
-        <button class="nav-close" id="navClose">&#x2715;</button>button>
-        <a href="#" class="nav-link">Shop All</a>a>
-        <a href="#" class="nav-link">Collections</a>a>
-        <a href="#" class="nav-link">Our Story</a>a>
-        <a href="#" class="nav-link">Gift Cards</a>a>
-        <a href="#" class="nav-link">Contact</a>a>
-    </nav>nav>
-
-    <!-- HEADER -->
-    <header>
-        <button class="ham" id="hamBtn" aria-label="Menu">
-              <span></span><span></span><span></span>
-        </button>button>
-    
-      <!-- IMAGE 1: Main logo — used directly as the header -->
-      <img
-            class="logo-img"
-            src="https://github.com/user-attachments/assets/85c05165-89ab-40ec-a0c4-42f9a5c56a59"
-            alt="lovetosleep – Two Sides, One You"
-          />
-    
-      <!-- TOGGLE: Sleep (left/default) → Love (right) -->
-      <div class="tog-row">
-          <span class="tog-label lbl-sleep">Sleep</span>
-          <button class="tog-btn" id="togBtn" aria-label="Toggle Sleep / Love">
-                <div class="tog-track"></div>div>
-                <div class="tog-thumb"></div>div>
-          </button>button>
-          <span class="tog-label lbl-love">Love</span>
-      </div>div>
-    </header>
-  
-  <!-- SPLIT PANELS -->
-  <section class="split">
-  
-    <!-- SLEEP PANEL (left, expanded by default) -->
-    <div class="panel panel-sleep">
-    
-        <!-- IMAGE 3: Sleep logo — used directly for the sleep section -->
-        <img
-                class="section-logo"
-                src="https://github.com/user-attachments/assets/959231e3-fc41-457d-baba-683b4d5763a8"
-                alt="sleep – Comfort. Rest. You."
-              />
-    
-        <div class="pgrid">
-              <div class="pcard">
-                      <div class="picon">🌙</div>div>
-                      <div class="pname">Cloud Fleece Set</div>div>
-                      <div class="pprice">$88</div>div>
-              </div>div>
-              <div class="pcard">
-                      <div class="picon">⭐</div>div>
-                      <div class="pname">Dream Cotton PJ</div>div>
-                      <div class="pprice">$72</div>div>
-              </div>div>
-              <div class="pcard">
-                      <div class="picon">🌌</div>div>
-                      <div class="pname">Stargazer Shorts</div>div>
-                      <div class="pprice">$54</div>div>
-              </div>div>
-              <div class="pcard">
-                      <div class="picon">🌿</div>div>
-                      <div class="pname">Bamboo Serenity</div>div>
-                      <div class="pprice">$96</div>div>
-              </div>div>
-        </div>div>
-        <button class="shop-btn">Shop Sleep</button>button>
-    </div>div>
-  
-    <div class="divider"></div>div>
-  
-    <!-- LOVE PANEL (right, minimised by default) -->
-    <div class="panel panel-love">
-    
-        <!-- IMAGE 2: Love logo — used directly for the love section -->
-        <img
-                class="section-logo"
-                src="https://github.com/user-attachments/assets/a7085c34-5acb-4b11-9e18-e3e9a1eb867a"
-                alt="love – Sensual. Intimate. You."
-              />
-    
-        <div class="pgrid">
-              <div class="pcard">
-                      <div class="picon">🌹</div>div>
-                      <div class="pname">Velvet Kiss Set</div>div>
-                      <div class="pprice">$98</div>div>
-              </div>div>
-              <div class="pcard">
-                      <div class="picon">🌸</div>div>
-                      <div class="pname">Silk Whisper Robe</div>div>
-                      <div class="pprice">$128</div>div>
-              </div>div>
-              <div class="pcard">
-                      <div class="picon">✨</div>div>
-                      <div class="pname">Lace Reverie</div>div>
-                      <div class="pprice">$76</div>div>
-              </div>div>
-              <div class="pcard">
-                      <div class="picon">🫦</div>div>
-                      <div class="pname">Midnight Satin</div>div>
-                      <div class="pprice">$88</div>div>
-              </div>div>
-        </div>div>
-        <button class="shop-btn">Shop Love</button>button>
-    </div>div>
-  
-  </section>section>
-  
-  <footer>&copy; 2026 lovetosleep &nbsp;&bull;&nbsp; Two Sides, One You</footer>
-  
-  <script>
-    const B = document.getElementById('B');
-    const togBtn = document.getElementById('togBtn');
-    const hamBtn = document.getElementById('hamBtn');
-    const navOv = document.getElementById('navOv');
-    const navClose = document.getElementById('navClose');
-
-    togBtn.addEventListener('click', () => B.classList.toggle('love'));
-    hamBtn.addEventListener('click', () => navOv.classList.add('open'));
-    navClose.addEventListener('click', () => navOv.classList.remove('open'));
-    navOv.addEventListener('click', e => { if(e.target === navOv) navOv.classList.remove('open'); });
-  </script>
-  </body>body>
-</html>html>
-  </script></footer></span></span>
-    </header>
-  </style></title>
-  </head>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>lovetosleep</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--s-bg:#1b2540;--s-bg2:#131d34;--s-card:#0f1828;--s-ink:#cddaee;--s-muted:#7a9abf;--l-bg:#f5ede8;--l-card:#e4cec3;--l-ink:#7a4535;--l-muted:#a86858;--ease:.72s cubic-bezier(.4,0,.2,1)}
+html{scroll-behavior:smooth}
+body{font-family:Montserrat,sans-serif;min-height:100vh;overflow-x:hidden;background:var(--s-bg);color:var(--s-ink);transition:background var(--ease),color var(--ease)}
+body.love{background:var(--l-bg);color:var(--l-ink)}
+header{position:relative;display:flex;flex-direction:column;align-items:center;padding:48px 24px 16px}
+.ham{position:absolute;top:24px;right:24px;width:46px;height:46px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;justify-content:center;gap:6px;padding:8px;border-radius:50%;z-index:200;transition:background .3s}
+.ham:hover{background:rgba(128,128,128,.12)}
+.ham span{display:block;height:1.5px;border-radius:2px;transition:background .5s}
+body:not(.love) .ham span{background:var(--s-muted)}
+body.love .ham span{background:var(--l-muted)}
+.logo-img{width:380px;max-width:90vw;height:auto;display:block;margin-bottom:24px}
+.tog-row{display:flex;align-items:center;gap:22px;margin-bottom:50px}
+.tog-label{font-family:Cormorant Garamond,serif;font-size:1.05rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;transition:opacity .5s,color .5s}
+.lbl-sleep{color:var(--s-muted);opacity:1}
+.lbl-love{color:var(--l-muted);opacity:.38}
+body.love .lbl-sleep{opacity:.38}
+body.love .lbl-love{opacity:1}
+.tog-btn{position:relative;width:54px;height:28px;background:none;border:none;cursor:pointer;padding:0}
+.tog-track{width:54px;height:28px;border-radius:14px;background:var(--s-bg2);border:1.5px solid var(--s-muted);transition:background .55s,border-color .55s}
+body.love .tog-track{background:#c08878;border-color:#c08878}
+.tog-thumb{position:absolute;top:4px;left:30px;width:20px;height:20px;border-radius:50%;background:var(--s-muted);box-shadow:0 1px 5px rgba(0,0,0,.28);transition:left .55s cubic-bezier(.4,0,.2,1),background .55s}
+body.love .tog-thumb{left:4px;background:#fff}
+.split{display:flex;min-height:100vh}
+.panel{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:50px 28px 60px;overflow:hidden;transition:flex var(--ease),opacity var(--ease)}
+.ps{background:var(--s-bg)}.pl{background:var(--l-bg)}
+body:not(.love) .ps{flex:2.5;opacity:1}
+body:not(.love) .pl{flex:.5;opacity:.25}
+body.love .ps{flex:.5;opacity:.25}
+body.love .pl{flex:2.5;opacity:1}
+.divider{width:1px;flex-shrink:0;align-self:stretch;background:linear-gradient(to bottom,transparent,rgba(150,150,150,.2) 30%,rgba(150,150,150,.2) 70%,transparent)}
+.slogo{width:220px;max-width:85%;height:auto;display:block;margin-bottom:28px;border-radius:12px}
+.pgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;width:100%;max-width:380px;margin-top:8px}
+.pcard{border-radius:14px;aspect-ratio:3/4;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:14px;cursor:pointer;transition:transform .3s,box-shadow .3s}
+.pcard:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,.22)}
+.ps .pcard{background:var(--s-card)}.pl .pcard{background:var(--l-card)}
+.picon{font-size:2.1rem;margin-bottom:8px;opacity:.7}
+.pname{font-family:Cormorant Garamond,serif;font-size:.98rem;font-weight:400;letter-spacing:.05em;text-align:center}
+.ps .pname{color:var(--s-ink)}.pl .pname{color:var(--l-ink)}
+.pprice{font-size:.67rem;letter-spacing:.1em;margin-top:3px;font-weight:300}
+.ps .pprice{color:var(--s-muted)}.pl .pprice{color:var(--l-muted)}
+.cta{margin-top:26px;padding:13px 34px;border:none;border-radius:30px;font-family:Montserrat,sans-serif;font-size:.68rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;cursor:pointer;transition:transform .3s,box-shadow .3s}
+.cta:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,0,0,.2)}
+.ps .cta{background:var(--s-muted);color:#fff}.pl .cta{background:#c08878;color:#fff}
+.nav-ov{position:fixed;inset:0;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:30px;opacity:0;pointer-events:none;transition:opacity .4s}
+.nav-ov.open{opacity:1;pointer-events:all}
+body:not(.love) .nav-ov{background:rgba(13,18,28,.97)}
+body.love .nav-ov{background:rgba(245,237,232,.97)}
+.nav-close{position:absolute;top:28px;right:24px;background:none;border:none;font-size:1.8rem;cursor:pointer}
+body:not(.love) .nav-close{color:var(--s-muted)}
+body.love .nav-close{color:var(--l-muted)}
+.nav-link{font-family:Cormorant Garamond,serif;font-size:2rem;font-weight:300;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;opacity:.75;transition:opacity .3s}
+.nav-link:hover{opacity:1}
+body:not(.love) .nav-link{color:var(--s-ink)}
+body.love .nav-link{color:var(--l-ink)}
+footer{text-align:center;padding:24px;font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;opacity:.35;font-weight:300}
+@media(max-width:700px){.split{flex-direction:column}.divider{width:60%;height:1px;align-self:center;background:linear-gradient(to right,transparent,rgba(150,150,150,.2),transparent)}.logo-img{width:300px}}
+</style>
+</head>
+<body id="B">
+<nav class="nav-ov" id="navOv">
+<button class="nav-close" id="navClose">&#x2715;</button>
+<a href="#" class="nav-link">Shop All</a>
+<a href="#" class="nav-link">Collections</a>
+<a href="#" class="nav-link">Our Story</a>
+<a href="#" class="nav-link">Gift Cards</a>
+<a href="#" class="nav-link">Contact</a>
+</nav>
+<header>
+<button class="ham" id="hamBtn"><span></span><span></span><span></span></button>
+<img class="logo-img" src="https://github.com/user-attachments/assets/85c05165-89ab-40ec-a0c4-42f9a5c56a59" alt="lovetosleep - Two Sides One You"/>
+<div class="tog-row">
+<span class="tog-label lbl-sleep">Sleep</span>
+<button class="tog-btn" id="togBtn"><div class="tog-track"></div><div class="tog-thumb"></div></button>
+<span class="tog-label lbl-love">Love</span>
+</div>
+</header>
+<section class="split">
+<div class="panel ps">
+<img class="slogo" src="https://github.com/user-attachments/assets/959231e3-fc41-457d-baba-683b4d5763a8" alt="sleep - Comfort Rest You"/>
+<div class="pgrid">
+<div class="pcard"><div class="picon">&#127769;</div><div class="pname">Cloud Fleece Set</div><div class="pprice">$88</div></div>
+<div class="pcard"><div class="picon">&#11088;</div><div class="pname">Dream Cotton PJ</div><div class="pprice">$72</div></div>
+<div class="pcard"><div class="picon">&#127756;</div><div class="pname">Stargazer Shorts</div><div class="pprice">$54</div></div>
+<div class="pcard"><div class="picon">&#127807;</div><div class="pname">Bamboo Serenity</div><div class="pprice">$96</div></div>
+</div>
+<button class="cta">Shop Sleep</button>
+</div>
+<div class="divider"></div>
+<div class="panel pl">
+<img class="slogo" src="https://github.com/user-attachments/assets/a7085c34-5acb-4b11-9e18-e3e9a1eb867a" alt="love - Sensual Intimate You"/>
+<div class="pgrid">
+<div class="pcard"><div class="picon">&#127801;</div><div class="pname">Velvet Kiss Set</div><div class="pprice">$98</div></div>
+<div class="pcard"><div class="picon">&#127800;</div><div class="pname">Silk Whisper Robe</div><div class="pprice">$128</div></div>
+<div class="pcard"><div class="picon">&#10024;</div><div class="pname">Lace Reverie</div><div class="pprice">$76</div></div>
+<div class="pcard"><div class="picon">&#128523;</div><div class="pname">Midnight Satin</div><div class="pprice">$88</div></div>
+</div>
+<button class="cta">Shop Love</button>
+</div>
+</section>
+<footer>&copy; 2026 lovetosleep &bull; Two Sides, One You</footer>
+<script>
+var B=document.getElementById("B");
+var tog=document.getElementById("togBtn");
+var ham=document.getElementById("hamBtn");
+var nav=document.getElementById("navOv");
+var navX=document.getElementById("navClose");
+tog.addEventListener("click",function(){B.classList.toggle("love")});
+ham.addEventListener("click",function(){nav.classList.add("open")});
+navX.addEventListener("click",function(){nav.classList.remove("open")});
+nav.addEventListener("click",function(e){if(e.target===nav)nav.classList.remove("open")});
+</script>
+</body>
+</html>
