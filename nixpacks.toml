@@ -1,0 +1,8 @@
+[phases.build]
+cmds = ["echo 'Static site ready'"]
+
+[start]
+cmd = "npx serve -s . -l 8080"
+
+[phases.setup]
+nixPkgs = ["nodejs"]
