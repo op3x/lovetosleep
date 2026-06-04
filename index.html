@@ -1,611 +1,737 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Love to Sleep – Two Sides, One You</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>lovetosleep – Two Sides, One You</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap');
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --love-bg: #f5ede8;
-      --love-primary: #c4846a;
-      --love-accent: #e8a090;
-      --love-dark: #8b4f3a;
-      --love-text: #5a3028;
-      --sleep-bg: #1a2340;
-      --sleep-primary: #3d5a80;
-      --sleep-accent: #98c1d9;
-      --sleep-dark: #0d1b2a;
-      --sleep-text: #e0e8f0;
+        --love-bg: #f0e0d6;
+        --love-bg2: #e8cfc0;
+        --love-rose: #c4846a;
+        --love-rose-dark: #a86550;
+        --love-text: #6b3a2a;
+        --love-text-light: #9a5a46;
+        --sleep-bg: #1c2a45;
+        --sleep-bg2: #142035;
+        --sleep-navy: #2d3f60;
+        --sleep-silver: #8899bb;
+        --sleep-text: #dce6f5;
+        --sleep-text-light: #aabbd4;
+        --transition: 0.7s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Montserrat', sans-serif;
-      transition: background 0.6s ease, color 0.6s ease;
-      min-height: 100vh;
+        font-family: 'Montserrat', sans-serif;
+        min-height: 100vh;
+        overflow-x: hidden;
     }
 
-    body.love-mode {
-      background: var(--love-bg);
-      color: var(--love-text);
+    /* ──── SPLIT BACKGROUND ──── */
+    .page-bg {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        display: flex;
+        transition: all var(--transition);
     }
-    body.sleep-mode {
-      background: var(--sleep-bg);
-      color: var(--sleep-text);
+    .page-bg .bg-love {
+        background: var(--love-bg);
+        transition: width var(--transition);
+    }
+    .page-bg .bg-sleep {
+        background: var(--sleep-bg);
+        transition: width var(--transition);
+    }
+    body.mode-love .page-bg .bg-love { width: 100%; }
+    body.mode-love .page-bg .bg-sleep { width: 0; }
+    body.mode-sleep .page-bg .bg-love { width: 0; }
+    body.mode-sleep .page-bg .bg-sleep { width: 100%; }
+    body.mode-both .page-bg .bg-love { width: 50%; }
+    body.mode-both .page-bg .bg-sleep { width: 50%; }
+
+    .page-content {
+        position: relative;
+        z-index: 1;
+        min-height: 100vh;
     }
 
-    /* ── HEADER ── */
+    /* ──── HEADER / NAV ──── */
     header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 30px 20px 10px;
-      position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 24px 24px;
+        position: relative;
     }
 
-    .logo-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      margin-bottom: 28px;
+    /* Hamburger menu top-right */
+    .menu-btn {
+        position: absolute;
+        top: 28px;
+        right: 24px;
+        width: 44px;
+        height: 44px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px;
+        z-index: 200;
+        border-radius: 50%;
+        transition: background 0.3s;
+    }
+    .menu-btn:hover { background: rgba(128,128,128,0.12); }
+    .menu-btn span {
+        display: block;
+        height: 1.5px;
+        border-radius: 2px;
+        transition: background 0.5s, transform 0.4s;
+    }
+    body.mode-love .menu-btn span,
+    body.mode-both .menu-btn span { background: var(--love-rose-dark); }
+    body.mode-sleep .menu-btn span { background: var(--sleep-silver); }
+
+    /* ──── MAIN LOGO SVG ──── */
+    .logo-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 32px;
     }
 
-    .logo-symbol {
-      width: 80px;
-      height: 80px;
-      position: relative;
+    .logo-main-svg {
+        width: 320px;
+        height: auto;
     }
 
-    .logo-symbol svg {
-      width: 100%;
-      height: 100%;
+    /* ──── TOGGLE SWITCH ──── */
+    .toggle-row {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 48px;
+    }
+    .toggle-word {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.05rem;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        transition: opacity 0.5s, color 0.5s;
+    }
+    .toggle-word.love-word {
+        color: var(--love-rose);
+        opacity: 1;
+    }
+    .toggle-word.sleep-word {
+        color: var(--sleep-silver);
+        opacity: 0.5;
+    }
+    body.mode-sleep .toggle-word.love-word { opacity: 0.5; }
+    body.mode-sleep .toggle-word.sleep-word { opacity: 1; color: var(--sleep-text); }
+
+    /* The pill toggle */
+    .pill-toggle {
+        position: relative;
+        width: 52px;
+        height: 26px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+    }
+    .pill-track {
+        width: 52px;
+        height: 26px;
+        border-radius: 13px;
+        transition: background 0.5s;
+    }
+    body.mode-love .pill-track { background: var(--love-rose); }
+    body.mode-sleep .pill-track { background: var(--sleep-navy); border: 1.5px solid var(--sleep-silver); }
+    body.mode-both .pill-track { background: linear-gradient(90deg, var(--love-rose) 50%, var(--sleep-navy) 50%); }
+
+    .pill-thumb {
+        position: absolute;
+        top: 3px;
+        width: 20px;
+        height: 20px;
+        background: #fff;
+        border-radius: 50%;
+        transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.5s;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+    }
+    body.mode-love .pill-thumb { left: 3px; }
+    body.mode-sleep .pill-thumb { left: 29px; background: var(--sleep-silver); }
+    body.mode-both .pill-thumb { left: 16px; }
+
+    /* ──── SPLIT SECTION ──── */
+    .split-section {
+        display: flex;
+        min-height: 100vh;
+    }
+    .side {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 32px;
+        transition: flex var(--transition), opacity var(--transition);
+        overflow: hidden;
+    }
+    .side-love {
+        background: transparent;
+    }
+    .side-sleep {
+        background: transparent;
+    }
+    body.mode-love .side-love { flex: 2; }
+    body.mode-love .side-sleep { flex: 0.5; opacity: 0.35; }
+    body.mode-sleep .side-love { flex: 0.5; opacity: 0.35; }
+    body.mode-sleep .side-sleep { flex: 2; }
+
+    /* Side logo variants */
+    .side-logo-svg {
+        width: 180px;
+        height: auto;
+        margin-bottom: 28px;
     }
 
-    .logo-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2.2rem;
-      font-weight: 300;
-      letter-spacing: 0.15em;
-      display: flex;
-      gap: 12px;
-      align-items: center;
+    .side-heading {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 3.2rem;
+        font-weight: 300;
+        letter-spacing: 0.08em;
+        margin-bottom: 10px;
     }
+    .side-love .side-heading { color: var(--love-rose-dark); }
+    .side-sleep .side-heading { color: var(--sleep-text); }
 
-    .logo-text .love-part {
-      color: var(--love-primary);
-      transition: color 0.6s;
+    .side-tagline {
+        font-size: 0.6rem;
+        letter-spacing: 0.38em;
+        text-transform: uppercase;
+        margin-bottom: 36px;
+        font-weight: 400;
     }
-    .logo-text .infinity {
-      font-size: 1.4rem;
-      color: var(--love-primary);
-      transition: color 0.6s;
-    }
-    .logo-text .sleep-part {
-      color: var(--sleep-primary);
-      transition: color 0.6s;
-    }
-    body.sleep-mode .logo-text .infinity {
-      color: var(--sleep-accent);
-    }
+    .side-love .side-tagline { color: var(--love-text-light); }
+    .side-sleep .side-tagline { color: var(--sleep-text-light); }
 
-    .logo-tagline {
-      font-size: 0.62rem;
-      letter-spacing: 0.35em;
-      text-transform: uppercase;
-      opacity: 0.6;
-      font-weight: 400;
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        max-width: 480px;
+        width: 100%;
     }
-
-    /* ── TOGGLE ── */
-    .toggle-section {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      margin: 8px 0 30px;
-    }
-
-    .toggle-label {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.1rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      transition: opacity 0.4s, color 0.4s;
-    }
-
-    .toggle-label.love {
-      color: var(--love-primary);
-      opacity: 1;
-    }
-    .toggle-label.sleep {
-      color: var(--sleep-accent);
-      opacity: 0.4;
-    }
-
-    body.sleep-mode .toggle-label.love { opacity: 0.4; }
-    body.sleep-mode .toggle-label.sleep { opacity: 1; }
-
-    .toggle-track {
-      width: 70px;
-      height: 34px;
-      border-radius: 17px;
-      background: linear-gradient(135deg, var(--love-primary), var(--love-accent));
-      position: relative;
-      cursor: pointer;
-      transition: background 0.6s ease;
-      border: 2px solid rgba(255,255,255,0.3);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-    }
-
-    body.sleep-mode .toggle-track {
-      background: linear-gradient(135deg, var(--sleep-primary), var(--sleep-accent));
-    }
-
-    .toggle-thumb {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      background: white;
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-    }
-
-    body.sleep-mode .toggle-thumb {
-      transform: translateX(36px);
-    }
-
-    /* ── NAV ── */
-    nav {
-      width: 100%;
-      max-width: 900px;
-      margin: 0 auto 40px;
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      font-size: 0.72rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-    }
-
-    nav a {
-      text-decoration: none;
-      font-weight: 500;
-      padding-bottom: 4px;
-      border-bottom: 1px solid transparent;
-      transition: all 0.3s;
-    }
-
-    body.love-mode nav a {
-      color: var(--love-text);
-    }
-    body.love-mode nav a:hover {
-      color: var(--love-primary);
-      border-bottom-color: var(--love-primary);
-    }
-    body.sleep-mode nav a {
-      color: var(--sleep-text);
-    }
-    body.sleep-mode nav a:hover {
-      color: var(--sleep-accent);
-      border-bottom-color: var(--sleep-accent);
-    }
-
-    /* ── HERO ── */
-    .hero {
-      text-align: center;
-      padding: 20px 20px 50px;
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    .mode-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 3rem;
-      font-weight: 300;
-      font-style: italic;
-      line-height: 1.2;
-      margin-bottom: 16px;
-    }
-
-    .mode-subtitle {
-      font-size: 0.78rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      opacity: 0.7;
-      margin-bottom: 30px;
-    }
-
-    .hero-btn {
-      display: inline-block;
-      padding: 14px 42px;
-      border-radius: 30px;
-      font-size: 0.72rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      text-decoration: none;
-      font-weight: 500;
-      transition: all 0.3s;
-      cursor: pointer;
-      border: none;
-    }
-
-    body.love-mode .hero-btn {
-      background: var(--love-primary);
-      color: white;
-      box-shadow: 0 6px 20px rgba(196,132,106,0.4);
-    }
-    body.love-mode .hero-btn:hover {
-      background: var(--love-dark);
-      transform: translateY(-2px);
-    }
-    body.sleep-mode .hero-btn {
-      background: var(--sleep-accent);
-      color: var(--sleep-dark);
-      box-shadow: 0 6px 20px rgba(152,193,217,0.35);
-    }
-    body.sleep-mode .hero-btn:hover {
-      background: #b8d8ea;
-      transform: translateY(-2px);
-    }
-
-    /* ── SECTION CONTENT TRANSITION ── */
-    .mode-content {
-      display: none;
-      animation: fadeIn 0.5s ease;
-    }
-    .mode-content.active { display: block; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── PRODUCTS ── */
-    .products-section {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 30px 60px;
-    }
-
-    .section-heading {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.9rem;
-      font-weight: 300;
-      text-align: center;
-      margin-bottom: 8px;
-    }
-
-    .section-rule {
-      width: 60px;
-      height: 1px;
-      margin: 0 auto 40px;
-    }
-    body.love-mode .section-rule { background: var(--love-primary); }
-    body.sleep-mode .section-rule { background: var(--sleep-accent); }
-
-    .products-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 28px;
-    }
-
     .product-card {
-      border-radius: 16px;
-      overflow: hidden;
-      transition: transform 0.3s, box-shadow 0.3s;
-      cursor: pointer;
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+        aspect-ratio: 3/4;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
     }
+    .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.18); }
 
-    body.love-mode .product-card {
-      background: white;
-      box-shadow: 0 4px 20px rgba(196,132,106,0.12);
+    .side-love .product-card { background: var(--love-bg2); }
+    .side-sleep .product-card { background: var(--sleep-bg2); }
+
+    .product-card-inner {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 16px;
     }
-    body.sleep-mode .product-card {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(152,193,217,0.15);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    }
-
-    .product-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 35px rgba(0,0,0,0.18);
-    }
-
-    .product-img {
-      width: 100%;
-      height: 280px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 5rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    body.love-mode .product-img { background: linear-gradient(160deg, #fde8e0, #f5c5b5); }
-    body.sleep-mode .product-img { background: linear-gradient(160deg, #1e2d4a, #2a3f60); }
-
-    .product-info {
-      padding: 18px 20px 20px;
-    }
-
     .product-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.15rem;
-      font-weight: 600;
-      margin-bottom: 4px;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.1rem;
+        font-weight: 400;
+        letter-spacing: 0.06em;
+        text-align: center;
     }
-
-    .product-desc {
-      font-size: 0.72rem;
-      opacity: 0.65;
-      line-height: 1.5;
-      margin-bottom: 14px;
-    }
+    .side-love .product-name { color: var(--love-text); }
+    .side-sleep .product-name { color: var(--sleep-text); }
 
     .product-price {
-      font-size: 0.9rem;
-      font-weight: 500;
+        font-size: 0.72rem;
+        letter-spacing: 0.1em;
+        margin-top: 4px;
+        font-weight: 300;
+    }
+    .side-love .product-price { color: var(--love-rose); }
+    .side-sleep .product-price { color: var(--sleep-silver); }
+
+    .product-icon {
+        font-size: 2.8rem;
+        margin-bottom: 12px;
+        opacity: 0.55;
     }
 
-    body.love-mode .product-price { color: var(--love-primary); }
-    body.sleep-mode .product-price { color: var(--sleep-accent); }
+    .cta-btn {
+        margin-top: 32px;
+        padding: 13px 34px;
+        border: none;
+        border-radius: 30px;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+    }
+    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+    .side-love .cta-btn { background: var(--love-rose); color: #fff; }
+    .side-sleep .cta-btn { background: var(--sleep-navy); color: var(--sleep-text); border: 1px solid var(--sleep-silver); }
 
-    .add-to-cart {
-      display: block;
-      width: 100%;
-      margin-top: 12px;
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      font-size: 0.68rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    body.love-mode .add-to-cart {
-      background: var(--love-bg);
-      color: var(--love-primary);
-      border: 1px solid var(--love-accent);
-    }
-    body.love-mode .add-to-cart:hover {
-      background: var(--love-primary);
-      color: white;
-    }
-    body.sleep-mode .add-to-cart {
-      background: rgba(152,193,217,0.1);
-      color: var(--sleep-accent);
-      border: 1px solid rgba(152,193,217,0.3);
-    }
-    body.sleep-mode .add-to-cart:hover {
-      background: var(--sleep-accent);
-      color: var(--sleep-dark);
+    /* Divider line */
+    .split-divider {
+        width: 1px;
+        background: linear-gradient(to bottom, transparent, rgba(150,150,150,0.35), transparent);
+        align-self: stretch;
+        flex-shrink: 0;
     }
 
-    /* ── FOOTER ── */
+    /* ──── NAV OVERLAY ──── */
+    .nav-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 300;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 28px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s;
+    }
+    .nav-overlay.open {
+        opacity: 1;
+        pointer-events: all;
+    }
+    body.mode-love .nav-overlay,
+    body.mode-both .nav-overlay { background: rgba(240,224,214,0.96); }
+    body.mode-sleep .nav-overlay { background: rgba(28,42,69,0.97); }
+
+    .nav-close {
+        position: absolute;
+        top: 28px;
+        right: 24px;
+        background: none;
+        border: none;
+        font-size: 1.8rem;
+        cursor: pointer;
+        line-height: 1;
+        transition: color 0.3s;
+    }
+    body.mode-love .nav-close,
+    body.mode-both .nav-close { color: var(--love-rose-dark); }
+    body.mode-sleep .nav-close { color: var(--sleep-silver); }
+
+    .nav-link {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 2rem;
+        font-weight: 300;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-decoration: none;
+        transition: opacity 0.3s;
+        opacity: 0.85;
+    }
+    .nav-link:hover { opacity: 1; }
+    body.mode-love .nav-link,
+    body.mode-both .nav-link { color: var(--love-rose-dark); }
+    body.mode-sleep .nav-link { color: var(--sleep-text); }
+
+    /* ──── FOOTER ──── */
     footer {
-      text-align: center;
-      padding: 30px 20px;
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      opacity: 0.45;
-      border-top: 1px solid currentColor;
-      margin-top: 20px;
+        text-align: center;
+        padding: 28px 24px;
+        font-size: 0.62rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        opacity: 0.45;
+        font-weight: 300;
     }
+    body.mode-love footer,
+    body.mode-both footer { color: var(--love-text); }
+    body.mode-sleep footer { color: var(--sleep-text); }
 
-    /* ── BANNER ── */
-    .banner {
-      text-align: center;
-      padding: 12px;
-      font-size: 0.65rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
+    /* ──── RESPONSIVE ──── */
+    @media (max-width: 700px) {
+        .split-section { flex-direction: column; }
+        .split-divider { width: 80%; height: 1px; align-self: center; background: linear-gradient(to right, transparent, rgba(150,150,150,0.35), transparent); }
+        .product-grid { grid-template-columns: repeat(2, 1fr); max-width: 320px; }
+        .logo-main-svg { width: 260px; }
+        body.mode-love .side-sleep { flex: unset; min-height: 30vh; }
+        body.mode-sleep .side-love { flex: unset; min-height: 30vh; }
     }
-    body.love-mode .banner { background: var(--love-primary); color: white; }
-    body.sleep-mode .banner { background: var(--sleep-dark); color: var(--sleep-accent); }
-  </style>
-</head>
-<body class="love-mode">
+    </style>
+  </head>
+  <body class="mode-both" id="mainBody">
 
-  <!-- Top Banner -->
-  <div class="banner">Free shipping on orders over $75 &nbsp;·&nbsp; New arrivals every Friday</div>
+    <div class="page-bg">
+        <div class="bg-love"></div>div>
+        <div class="bg-sleep"></div>div>
+    </div>div>
 
-  <header>
-    <!-- Logo -->
-    <div class="logo-container">
-      <div class="logo-symbol">
-        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Heart left half -->
-          <path d="M40 62 C40 62 10 45 10 28 C10 18 18 12 28 14 C34 15 38 20 40 24" fill="#c4846a" opacity="0.9"/>
-          <!-- Moon right half -->
-          <path d="M40 24 C42 20 46 15 52 14 C62 12 70 18 70 28 C70 45 40 62 40 62" fill="#1a2340" opacity="0.9"/>
-          <!-- Infinity divider hint -->
-          <ellipse cx="40" cy="38" rx="2" ry="12" fill="white" opacity="0.6"/>
-        </svg>
-      </div>
-      <div class="logo-text">
-        <span class="love-part">love</span>
-        <span class="infinity">∞</span>
-        <span class="sleep-part">sleep</span>
-      </div>
-      <div class="logo-tagline">Two Sides &nbsp;·&nbsp; One You</div>
-    </div>
+    <!-- NAV OVERLAY -->
+    <nav class="nav-overlay" id="navOverlay">
+        <button class="nav-close" id="navClose" aria-label="Close menu">&#x2715;</button>button>
+        <a href="#" class="nav-link">Shop</a>a>
+        <a href="#" class="nav-link">Collections</a>a>
+        <a href="#" class="nav-link">Our Story</a>a>
+        <a href="#" class="nav-link">Gift Cards</a>a>
+        <a href="#" class="nav-link">Contact</a>a>
+    </nav>nav>
 
-    <!-- TOGGLE -->
-    <div class="toggle-section">
-      <span class="toggle-label love">Love</span>
-      <div class="toggle-track" id="toggleTrack" onclick="toggleMode()" role="switch" aria-checked="false" tabindex="0">
-        <div class="toggle-thumb" id="toggleThumb"></div>
-      </div>
-      <span class="toggle-label sleep">Sleep</span>
-    </div>
+    <div class="page-content">
+        <header>
+              <!-- HAMBURGER MENU — TOP RIGHT -->
+              <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+                      <span></span>
+                    <span></span>
+                    <span></span>
+              </button>button>
+        
+            <!-- MAIN LOGO -->
+            <div class="logo-wrap">
+                  <!-- Full combined logo matching the reference image -->
+                  <svg class="logo-main-svg" viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg">
+                          <defs>
+                                      <!-- Rose-gold gradient for love side of icon -->
+                                      <linearGradient id="roseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                    <stop offset="0%" style="stop-color:#d4957a;stop-opacity:1" />
+                                                    <stop offset="100%" style="stop-color:#b87060;stop-opacity:1" />
+                                      </linearGradient>linearGradient>
+                                      <!-- Navy gradient for sleep side of icon -->
+                                      <linearGradient id="navyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                    <stop offset="0%" style="stop-color:#2a3d5e;stop-opacity:1" />
+                                                    <stop offset="100%" style="stop-color:#1a2b45;stop-opacity:1" />
+                                      </linearGradient>linearGradient>
+                                      <!-- Rose-gold text gradient -->
+                                      <linearGradient id="roseTextGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                    <stop offset="0%" style="stop-color:#c98470" />
+                                                    <stop offset="100%" style="stop-color:#a86050" />
+                                      </linearGradient>linearGradient>
+                          </defs>
 
-    <!-- NAV -->
-    <nav>
-      <a href="#">Collection</a>
-      <a href="#">About</a>
-      <a href="#">Gifting</a>
-      <a href="#">Journal</a>
-      <a href="#">Cart (0)</a>
-    </nav>
-  </header>
+                            <!-- ═══ ICON: Heart + Crescent Moon combined ═══ -->
+                            <!-- Heart shape (left/love side) in rose-gold -->
+                            <!-- The heart is formed by two arcs meeting at a point -->
+                            <!-- Left lobe of heart -->
+                            <path d="M 185 42
+                                               C 185 30, 170 22, 158 28
+                                               C 148 33, 145 44, 148 54
+                                               L 185 85
+                                               L 185 42 Z"
+                                            fill="url(#roseGrad)" opacity="0.92"/>
+                            <!-- Right lobe of heart (becomes the D/crescent) — navy -->
+                            <path d="M 185 42
+                                               C 185 30, 200 22, 212 28
+                                               C 222 33, 225 44, 222 54
+                                               L 185 85
+                                               L 185 42 Z"
+                                            fill="none" stroke="url(#navyGrad)" stroke-width="3.5" opacity="0.85"/>
 
-  <!-- ═══════════════════ LOVE MODE ═══════════════════ -->
-  <div class="mode-content active" id="loveContent">
-    <div class="hero">
-      <div class="mode-title">Sensual by Design,<br/>Intimate by Nature</div>
-      <div class="mode-subtitle">The Love Collection · Sensual Sleepwear</div>
-      <button class="hero-btn">Explore the Collection</button>
-    </div>
+                            <!-- Full heart outline for the love half -->
+                            <path d="M 160 32
+                                               C 148 25, 134 30, 130 42
+                                               C 127 52, 132 62, 145 73
+                                               L 185 98
+                                               L 185 42
+                                               C 185 30, 173 22, 160 32 Z"
+                                            fill="url(#roseGrad)" opacity="0.88"/>
 
-    <section class="products-section">
-      <div class="section-heading">The Love Edit</div>
-      <div class="section-rule"></div>
-      <div class="products-grid">
+                            <!-- Crescent / D shape for sleep side in navy -->
+                            <!-- Outer circle arc -->
+                            <path d="M 185 30
+                                               C 210 30, 228 45, 228 64
+                                               C 228 83, 210 98, 185 98"
+                                            fill="none" stroke="#2a3d5e" stroke-width="5" stroke-linecap="round"/>
+                            <!-- Inner cutout arc (makes it a crescent) -->
+                            <path d="M 185 40
+                                               C 205 40, 218 50, 218 64
+                                               C 218 78, 205 88, 185 88"
+                                            fill="none" stroke="#f0e0d6" stroke-width="3" stroke-linecap="round"/>
 
-        <div class="product-card">
-          <div class="product-img">🌹</div>
-          <div class="product-info">
-            <div class="product-name">Rose Silk Chemise</div>
-            <div class="product-desc">100% mulberry silk, bias-cut for a fluid drape that moves with you</div>
-            <div class="product-price">$148</div>
-            <button class="add-to-cart">Add to Cart</button>
-          </div>
-        </div>
+                            <!-- Crescent shape filled navy -->
+                            <path d="M 185 30
+                                               C 210 30, 228 45, 228 64
+                                               C 228 83, 210 98, 185 98
+                                               C 185 88, 202 78, 202 64
+                                               C 202 50, 185 42, 185 30 Z"
+                                            fill="#1e2e4a" opacity="0.9"/>
 
-        <div class="product-card">
-          <div class="product-img">✨</div>
-          <div class="product-info">
-            <div class="product-name">Lace-Trim Cami Set</div>
-            <div class="product-desc">Delicate French lace trim, satin camisole & shorts for warm nights</div>
-            <div class="product-price">$124</div>
-            <button class="add-to-cart">Add to Cart</button>
-          </div>
-        </div>
+                            <!-- ═══ WORDMARK ═══ -->
+                            <!-- "love" in rose-gold Cormorant style -->
+                            <text x="108" y="126"
+                                            font-family="Georgia, 'Times New Roman', serif"
+                                            font-size="28"
+                                            font-weight="400"
+                                            letter-spacing="3"
+                                            fill="url(#roseTextGrad)">love</text>text>
 
-        <div class="product-card">
-          <div class="product-img">🕯️</div>
-          <div class="product-info">
-            <div class="product-name">Velvet Robe</div>
-            <div class="product-desc">Plush crushed velvet in dusty rose, full-length with satin lining</div>
-            <div class="product-price">$189</div>
-            <button class="add-to-cart">Add to Cart</button>
-          </div>
-        </div>
+                            <!-- Toggle pill between words -->
+                            <!-- Pill track -->
+                            <rect x="188" y="112" width="36" height="18" rx="9"
+                                            fill="#c4846a" opacity="0.9"/>
+                            <!-- Pill thumb (centered = neutral) -->
+                            <circle cx="197" cy="121" r="7" fill="white" opacity="0.95"/>
 
-        <div class="product-card">
-          <div class="product-img">💋</div>
-          <div class="product-info">
-            <div class="product-name">Mauve Slip Dress</div>
-            <div class="product-desc">Vintage-inspired slip with adjustable spaghetti straps, thigh-high slit</div>
-            <div class="product-price">$136</div>
-            <button class="add-to-cart">Add to Cart</button>
-          </div>
-        </div>
+                            <!-- "sleep" in navy/dark -->
+                            <text x="232" y="126"
+                                            font-family="Georgia, 'Times New Roman', serif"
+                                            font-size="28"
+                                            font-weight="400"
+                                            letter-spacing="3"
+                                            fill="#1e2e4a">sleep</text>text>
 
-      </div>
-    </section>
-  </div>
+                            <!-- Tagline -->
+                            <text x="200" y="148"
+                                            font-family="'Montserrat', Arial, sans-serif"
+                                            font-size="7"
+                                            font-weight="400"
+                                            letter-spacing="5"
+                                            fill="#888"
+                                            text-anchor="middle">TWO SIDES. ONE YOU.</text>text>
+                  </svg>svg>
+            </div>div>
 
-  <!-- ═══════════════════ SLEEP MODE ═══════════════════ -->
-  <div class="mode-content" id="sleepContent">
-    <div class="hero">
-      <div class="mode-title">Rest Deep,<br/>Dream Freely</div>
-      <div class="mode-subtitle">The Sleep Collection · Comfort Sleepwear</div>
-      <button class="hero-btn">Explore the Collection</button>
-    </div>
+              <!-- TOGGLE ROW -->
+              <div class="toggle-row">
+                      <span class="toggle-word love-word">Love</span>
+                      <button class="pill-toggle" id="toggleBtn" aria-label="Toggle between Love and Sleep">
+                                <div class="pill-track"></div>div>
+                                <div class="pill-thumb"></div>div>
+                      </button>button>
+                      <span class="toggle-word sleep-word">Sleep</span>
+              </div>div>
+        </header>
 
-    <section class="products-section">
-      <div class="section-heading">The Sleep Edit</div>
-      <div class="section-rule"></div>
-      <div class="products-grid">
+        <!-- SPLIT PRODUCT SECTIONS -->
+        <section class="split-section">
 
-        <div class="product-card">
-          <div class="product-img">🌙</div>
-          <div class="product-info">
-            <div class="product-name">Cloud Fleece Set</div>
-            <div class="product-desc">Ultra-soft micro-fleece long-sleeve top & wide-leg pants, cloud weight</div>
-            <div class="product-price">$96</div>
-            <button class="add-to-cart">Add to Cart</button>
-          </div>
-        </div>
+              <!-- LOVE SIDE -->
+              <div class="side side-love">
+                      <!-- Love sub-brand logo -->
+                      <svg class="side-logo-svg" viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                            <linearGradient id="loveIconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                          <stop offset="0%" style="stop-color:#d4957a"/>
+                                                          <stop offset="100%" style="stop-color:#b87060"/>
+                                            </linearGradient>linearGradient>
+                                </defs>
+                                <!-- Heart icon — love side only, warm rose-gold -->
+                                <path d="M 110 148
+                                                   C 85 132, 46 108, 40 80
+                                                   C 35 58, 52 42, 72 44
+                                                   C 88 46, 100 58, 110 70
+                                                   C 120 58, 132 46, 148 44
+                                                   C 168 42, 185 58, 180 80
+                                                   C 174 108, 135 132, 110 148 Z"
+                                                fill="none"
+                                                stroke="url(#loveIconGrad)"
+                                                stroke-width="4.5"
+                                                stroke-linejoin="round"/>
+                                <!-- Inner crescent hint inside heart -->
+                                <path d="M 110 68
+                                                   C 122 56, 138 50, 148 56
+                                                   C 162 64, 162 82, 152 94"
+                                                fill="none"
+                                                stroke="#d4957a"
+                                                stroke-width="2.5"
+                                                stroke-linecap="round"
+                                                opacity="0.5"/>
 
-        <div class="product-card">
-          <div class="product-img">⭐</div>
-          <div class="product-info">
-            <div class="product-name">Navy Flannel PJ Set</div>
-            <div class="product-desc">Brushed cotton flannel with classic plaid, button-up top & elastic waist</div>
-            <div class="product-price">$88</div>
-            <button class="add-to-cart">Add to Cart</button>
-          </div>
-        </div>
+                                <text x="110" y="168"
+                                                font-family="Georgia, 'Times New Roman', serif"
+                                                font-size="26"
+                                                font-weight="300"
+                                                letter-spacing="6"
+                                                fill="#c4846a"
+                                                text-anchor="middle">love</text>text>
 
-        <div class="product-card">
-          <div class="product-img">🛌</div>
-          <div class="product-info">
-            <div class="product-name">Bamboo Lounge Set</div>
-            <div class="product-desc">Temperature-regulating bamboo jersey, loose fit for deep, uninterrupted sleep</div>
-            <div class="product-price">$112</div>
-            <button class="add-to-cart">Add to Cart</button>
-          </div>
-        </div>
+                                <text x="110" y="182"
+                                                font-family="'Montserrat', Arial, sans-serif"
+                                                font-size="5.5"
+                                                font-weight="400"
+                                                letter-spacing="4.5"
+                                                fill="#a07060"
+                                                text-anchor="middle">SENSUAL. INTIMATE. YOU.</text>text>
+                      </svg>svg>
 
-        <div class="product-card">
-          <div class="product-img">🌊</div>
-          <div class="product-info">
-            <div class="product-name">Waffle Knit Onesie</div>
-            <div class="product-desc">Cozy full-coverage waffle knit with kangaroo pocket in midnight navy</div>
-            <div class="product-price">$102</div>
-            <button class="add-to-cart">Add to Cart</button>
-          </div>
-        </div>
+                      <div class="product-grid">
+                                <div class="product-card">
+                                            <div class="product-card-inner">
+                                                          <div class="product-icon">🌹</div>div>
+                                                          <div class="product-name">Velvet Kiss Set</div>div>
+                                                          <div class="product-price">$98</div>div>
+                                            </div>div>
+                                </div>div>
+                                <div class="product-card">
+                                            <div class="product-card-inner">
+                                                          <div class="product-icon">🌸</div>div>
+                                                          <div class="product-name">Silk Whisper Robe</div>div>
+                                                          <div class="product-price">$128</div>div>
+                                            </div>div>
+                                </div>div>
+                                <div class="product-card">
+                                            <div class="product-card-inner">
+                                                          <div class="product-icon">✨</div>div>
+                                                          <div class="product-name">Lace Reverie</div>div>
+                                                          <div class="product-price">$76</div>div>
+                                            </div>div>
+                                </div>div>
+                                <div class="product-card">
+                                            <div class="product-card-inner">
+                                                          <div class="product-icon">🫦</div>div>
+                                                          <div class="product-name">Midnight Satin</div>div>
+                                                          <div class="product-price">$88</div>div>
+                                            </div>div>
+                                </div>div>
+                      </div>div>
+                      <button class="cta-btn">Shop Love</button>button>
+              </div>div>
 
-      </div>
-    </section>
-  </div>
+              <div class="split-divider"></div>div>
 
-  <footer>
-    &copy; 2026 Love to Sleep &nbsp;·&nbsp; Two Sides, One You &nbsp;·&nbsp; lovetosleep.com
-  </footer>
+              <!-- SLEEP SIDE -->
+              <div class="side side-sleep">
+                      <!-- Sleep sub-brand logo -->
+                      <svg class="side-logo-svg" viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                            <linearGradient id="sleepIconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                          <stop offset="0%" style="stop-color:#5a7aa8"/>
+                                                          <stop offset="100%" style="stop-color:#3d5a80"/>
+                                            </linearGradient>linearGradient>
+                                </defs>
+                                <!-- Crescent moon / D shape for sleep -->
+                                <path d="M 110 44
+                                                   C 145 44, 172 64, 172 100
+                                                   C 172 136, 145 156, 110 156
+                                                   C 110 146, 136 130, 136 100
+                                                   C 136 70, 110 56, 110 44 Z"
+                                                fill="none"
+                                                stroke="url(#sleepIconGrad)"
+                                                stroke-width="4.5"
+                                                stroke-linejoin="round"/>
+                                <!-- Left arc of heart outline blending in -->
+                                <path d="M 110 44
+                                                   C 80 44, 58 64, 58 88
+                                                   C 58 110, 74 126, 110 148"
+                                                fill="none"
+                                                stroke="#5a7aa8"
+                                                stroke-width="3"
+                                                stroke-linecap="round"
+                                                opacity="0.45"/>
 
-  <script>
-    let isLoveMode = true;
+                                <text x="110" y="172"
+                                                font-family="Georgia, 'Times New Roman', serif"
+                                                font-size="26"
+                                                font-weight="300"
+                                                letter-spacing="6"
+                                                fill="#8899bb"
+                                                text-anchor="middle">sleep</text>text>
 
-    function toggleMode() {
-      isLoveMode = !isLoveMode;
-      const body = document.body;
-      const loveContent = document.getElementById('loveContent');
-      const sleepContent = document.getElementById('sleepContent');
-      const track = document.getElementById('toggleTrack');
+                                <text x="110" y="186"
+                                                font-family="'Montserrat', Arial, sans-serif"
+                                                font-size="5.5"
+                                                font-weight="400"
+                                                letter-spacing="4.5"
+                                                fill="#7a8faa"
+                                                text-anchor="middle">COMFORT. REST. YOU.</text>text>
+                      </svg>svg>
 
-      if (isLoveMode) {
-        body.className = 'love-mode';
-        loveContent.classList.add('active');
-        sleepContent.classList.remove('active');
-        track.setAttribute('aria-checked', 'false');
-      } else {
-        body.className = 'sleep-mode';
-        sleepContent.classList.add('active');
-        loveContent.classList.remove('active');
-        track.setAttribute('aria-checked', 'true');
-      }
-    }
+                      <div class="product-grid">
+                                <div class="product-card">
+                                            <div class="product-card-inner">
+                                                          <div class="product-icon">🌙</div>div>
+                                                          <div class="product-name">Cloud Fleece Set</div>div>
+                                                          <div class="product-price">$88</div>div>
+                                            </div>div>
+                                </div>div>
+                                <div class="product-card">
+                                            <div class="product-card-inner">
+                                                          <div class="product-icon">⭐</div>div>
+                                                          <div class="product-name">Dream Cotton PJ</div>div>
+                                                          <div class="product-price">$72</div>div>
+                                            </div>div>
+                                </div>div>
+                                <div class="product-card">
+                                            <div class="product-card-inner">
+                                                          <div class="product-icon">🌌</div>div>
+                                                          <div class="product-name">Stargazer Shorts</div>div>
+                                                          <div class="product-price">$54</div>div>
+                                            </div>div>
+                                </div>div>
+                                <div class="product-card">
+                                            <div class="product-card-inner">
+                                                          <div class="product-icon">🌿</div>div>
+                                                          <div class="product-name">Bamboo Serenity</div>div>
+                                                          <div class="product-price">$96</div>div>
+                                            </div>div>
+                                </div>div>
+                      </div>div>
+                      <button class="cta-btn">Shop Sleep</button>button>
+              </div>div>
 
-    // Keyboard support
-    document.getElementById('toggleTrack').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleMode(); }
-    });
-  </script>
-</body>
-</html>
+        </section>section>
+
+        <footer>
+              &copy; 2026 lovetosleep &nbsp;&bull;&nbsp; Two Sides, One You
+        </footer>
+    </div>div>
+
+    <script>
+        const body = document.getElementById('mainBody');
+        const toggleBtn = document.getElementById('toggleBtn');
+        const menuBtn = document.getElementById('menuBtn');
+        const navOverlay = document.getElementById('navOverlay');
+        const navClose = document.getElementById('navClose');
+
+        // Start in 'both' (neutral) mode; first click goes to love, second to sleep, third back to both
+        const modes = ['mode-both', 'mode-love', 'mode-sleep'];
+        let modeIndex = 0;
+
+        toggleBtn.addEventListener('click', () => {
+              body.classList.remove(...modes);
+              modeIndex = (modeIndex + 1) % modes.length;
+              body.classList.add(modes[modeIndex]);
+        });
+
+        menuBtn.addEventListener('click', () => {
+              navOverlay.classList.add('open');
+        });
+        navClose.addEventListener('click', () => {
+              navOverlay.classList.remove('open');
+        });
+        navOverlay.addEventListener('click', (e) => {
+              if (e.target === navOverlay) navOverlay.classList.remove('open');
+        });
+    </script>
+  </body>body>
+</html>html>
+    </script>
+        </footer>
+                                </defs>
+                          </defs></span></span>
+        </header>
+  </style></title>
+  </head>
