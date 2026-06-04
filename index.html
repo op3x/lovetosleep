@@ -17,7 +17,7 @@ header{position:relative;display:flex;flex-direction:column;align-items:center;p
 .ham span{display:block;height:1.5px;border-radius:2px;transition:background .5s}
 body:not(.love) .ham span{background:var(--s-muted)}
 body.love .ham span{background:var(--l-muted)}
-.logo-img{width:380px;max-width:90vw;height:auto;display:block;margin-bottom:24px}
+.logo-img{width:400px;max-width:90vw;height:auto;display:block;margin-bottom:24px}
 .tog-row{display:flex;align-items:center;gap:22px;margin-bottom:50px}
 .tog-label{font-family:Cormorant Garamond,serif;font-size:1.05rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;transition:opacity .5s,color .5s}
 .lbl-sleep{color:var(--s-muted);opacity:1}
@@ -37,7 +37,7 @@ body:not(.love) .pl{flex:.5;opacity:.25}
 body.love .ps{flex:.5;opacity:.25}
 body.love .pl{flex:2.5;opacity:1}
 .divider{width:1px;flex-shrink:0;align-self:stretch;background:linear-gradient(to bottom,transparent,rgba(150,150,150,.2) 30%,rgba(150,150,150,.2) 70%,transparent)}
-.slogo{width:220px;max-width:85%;height:auto;display:block;margin-bottom:28px;border-radius:12px}
+.slogo{width:240px;max-width:85%;height:auto;display:block;margin-bottom:28px;border-radius:14px}
 .pgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;width:100%;max-width:380px;margin-top:8px}
 .pcard{border-radius:14px;aspect-ratio:3/4;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:14px;cursor:pointer;transition:transform .3s,box-shadow .3s}
 .pcard:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,.22)}
@@ -62,7 +62,7 @@ body.love .nav-close{color:var(--l-muted)}
 body:not(.love) .nav-link{color:var(--s-ink)}
 body.love .nav-link{color:var(--l-ink)}
 footer{text-align:center;padding:24px;font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;opacity:.35;font-weight:300}
-@media(max-width:700px){.split{flex-direction:column}.divider{width:60%;height:1px;align-self:center;background:linear-gradient(to right,transparent,rgba(150,150,150,.2),transparent)}.logo-img{width:300px}}
+@media(max-width:700px){.split{flex-direction:column}.divider{width:60%;height:1px;align-self:center}.logo-img{width:300px}}
 </style>
 </head>
 <body id="B">
@@ -76,7 +76,7 @@ footer{text-align:center;padding:24px;font-size:.58rem;letter-spacing:.22em;text
 </nav>
 <header>
 <button class="ham" id="hamBtn"><span></span><span></span><span></span></button>
-<img class="logo-img" src="https://github.com/user-attachments/assets/85c05165-89ab-40ec-a0c4-42f9a5c56a59" alt="lovetosleep - Two Sides One You"/>
+<img class="logo-img" src="logo-main.png" alt="lovetosleep - Two Sides One You"/>
 <div class="tog-row">
 <span class="tog-label lbl-sleep">Sleep</span>
 <button class="tog-btn" id="togBtn"><div class="tog-track"></div><div class="tog-thumb"></div></button>
@@ -85,7 +85,7 @@ footer{text-align:center;padding:24px;font-size:.58rem;letter-spacing:.22em;text
 </header>
 <section class="split">
 <div class="panel ps">
-<img class="slogo" src="https://github.com/user-attachments/assets/959231e3-fc41-457d-baba-683b4d5763a8" alt="sleep - Comfort Rest You"/>
+<img class="slogo" src="logo-sleep.png" alt="sleep - Comfort Rest You"/>
 <div class="pgrid">
 <div class="pcard"><div class="picon">&#127769;</div><div class="pname">Cloud Fleece Set</div><div class="pprice">$88</div></div>
 <div class="pcard"><div class="picon">&#11088;</div><div class="pname">Dream Cotton PJ</div><div class="pprice">$72</div></div>
@@ -96,7 +96,7 @@ footer{text-align:center;padding:24px;font-size:.58rem;letter-spacing:.22em;text
 </div>
 <div class="divider"></div>
 <div class="panel pl">
-<img class="slogo" src="https://github.com/user-attachments/assets/a7085c34-5acb-4b11-9e18-e3e9a1eb867a" alt="love - Sensual Intimate You"/>
+<img class="slogo" src="logo-love.png" alt="love - Sensual Intimate You"/>
 <div class="pgrid">
 <div class="pcard"><div class="picon">&#127801;</div><div class="pname">Velvet Kiss Set</div><div class="pprice">$98</div></div>
 <div class="pcard"><div class="picon">&#127800;</div><div class="pname">Silk Whisper Robe</div><div class="pprice">$128</div></div>
