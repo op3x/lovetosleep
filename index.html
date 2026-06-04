@@ -4,486 +4,563 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>lovetosleep – Two Sides, One You</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
     :root{
-        --love-bg:#f0e2d8;
-        --love-card:#e5cfbf;
-        --love-stroke:#c08870;
-        --love-text:#7a4535;
-        --love-sub:#a06050;
-        --sleep-bg:#1b2540;
-        --sleep-card:#131c30;
-        --sleep-stroke:#8aa2c4;
-        --sleep-text:#cddaee;
-        --sleep-sub:#7090b0;
-        --t:.7s cubic-bezier(.4,0,.2,1);
+        /* Sleep palette — default */
+        --s-bg:#1b2642;
+        --s-bg2:#131d34;
+        --s-card:#101828;
+        --s-ink:#d0deee;
+        --s-muted:#7a9abf;
+        --s-stroke:#8aaace;
+        /* Love palette */
+        --l-bg:#f4ece6;
+        --l-bg2:#edddd4;
+        --l-card:#e5cfc4;
+        --l-ink:#7a4535;
+        --l-muted:#a86858;
+        --l-stroke:#c08878;
+        /* Transitions */
+        --ease:.72s cubic-bezier(.4,0,.2,1);
     }
+
     html{scroll-behavior:smooth}
-    body{font-family:'Montserrat',sans-serif;min-height:100vh;overflow-x:hidden;
-           background:var(--love-bg);color:var(--love-text);
-           transition:background var(--t),color var(--t)}
-    body.sleep{background:var(--sleep-bg);color:var(--sleep-text)}
 
-    header{display:flex;flex-direction:column;align-items:center;padding:44px 24px 16px;position:relative}
+    body{
+        font-family:'Montserrat',sans-serif;
+        min-height:100vh;
+        overflow-x:hidden;
+        /* Default = sleep mode */
+        background:var(--s-bg);
+        color:var(--s-ink);
+        transition:background var(--ease),color var(--ease);
+    }
+    body.love{
+        background:var(--l-bg);
+        color:var(--l-ink);
+    }
 
-    .menu-btn{position:absolute;top:28px;right:24px;width:44px;height:44px;
-                background:none;border:none;cursor:pointer;
-                display:flex;flex-direction:column;justify-content:center;gap:6px;
-                padding:8px;z-index:200;border-radius:50%;transition:background .3s}
-    .menu-btn:hover{background:rgba(0,0,0,.06)}
-    .menu-btn span{display:block;height:1.5px;border-radius:2px;
-                     background:var(--love-stroke);transition:background .5s}
-    body.sleep .menu-btn span{background:var(--sleep-stroke)}
+    /* ── HEADER ── */
+    header{
+        position:relative;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        padding:50px 24px 20px;
+    }
 
-    .logo-main{width:300px;max-width:86vw;margin-bottom:28px}
+    /* Hamburger — always top right */
+    .ham{
+        position:absolute;top:28px;right:24px;
+        width:46px;height:46px;
+        background:none;border:none;cursor:pointer;
+        display:flex;flex-direction:column;justify-content:center;gap:6px;
+        padding:8px;border-radius:50%;z-index:200;
+        transition:background .3s;
+    }
+    .ham:hover{background:rgba(128,128,128,.1)}
+    .ham span{
+        display:block;height:1.5px;border-radius:2px;
+        transition:background .6s,transform .4s;
+    }
+    body:not(.love) .ham span{background:var(--s-stroke)}
+    body.love .ham span{background:var(--l-stroke)}
 
-    .toggle-row{display:flex;align-items:center;gap:20px;margin-bottom:48px}
-    .t-word{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;
-              letter-spacing:.16em;text-transform:uppercase;transition:opacity .5s,color .5s}
-    .t-love{color:var(--love-stroke);opacity:1}
-    .t-sleep{color:var(--sleep-stroke);opacity:.4}
-    body.sleep .t-love{opacity:.4}
-    body.sleep .t-sleep{opacity:1;color:var(--sleep-text)}
+    /* ── PRIMARY LOGO ── */
+    .logo-wrap{margin-bottom:32px}
+    .logo-primary{width:300px;max-width:88vw}
 
-    .pill{position:relative;width:52px;height:26px;background:none;border:none;cursor:pointer;padding:0}
-    .pill-track{width:52px;height:26px;border-radius:13px;background:var(--love-stroke);
-                  transition:background .5s,border .5s}
-    body.sleep .pill-track{background:var(--sleep-card);border:1.5px solid var(--sleep-stroke)}
-    .pill-thumb{position:absolute;top:3px;left:3px;width:20px;height:20px;
-                  background:#fff;border-radius:50%;
-                  box-shadow:0 1px 4px rgba(0,0,0,.2);
-                  transition:left .5s cubic-bezier(.4,0,.2,1),background .5s}
-    body.sleep .pill-thumb{left:29px;background:var(--sleep-stroke)}
+    /* ── TOGGLE ── */
+    .tog-row{
+        display:flex;align-items:center;gap:22px;
+        margin-bottom:52px;
+    }
+    .tog-label{
+        font-family:'Cormorant Garamond',serif;
+        font-size:1rem;font-weight:500;
+        letter-spacing:.18em;text-transform:uppercase;
+        transition:opacity .5s,color .5s;
+    }
+    /* Default = sleep active */
+    .lbl-sleep{opacity:1;color:var(--s-stroke)}
+    .lbl-love{opacity:.35;color:var(--l-stroke)}
+    body.love .lbl-sleep{opacity:.35;color:var(--s-stroke)}
+    body.love .lbl-love{opacity:1;color:var(--l-stroke)}
 
-    .split{display:flex;min-height:100vh}
-    .side{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-            padding:54px 28px;transition:flex var(--t),opacity var(--t);overflow:hidden}
-    .s-love{background:var(--love-bg)}
-    .s-sleep{background:var(--sleep-bg)}
-    body.love .s-love{flex:2;opacity:1}
-    body.love .s-sleep{flex:.45;opacity:.3}
-    body.sleep .s-love{flex:.45;opacity:.3}
-    body.sleep .s-sleep{flex:2;opacity:1}
+    .tog-btn{
+        position:relative;width:54px;height:28px;
+        background:none;border:none;cursor:pointer;padding:0;
+    }
+    .tog-track{
+        width:54px;height:28px;border-radius:14px;
+        transition:background .55s,border .55s;
+        background:var(--s-bg2);
+        border:1.5px solid var(--s-stroke);
+    }
+    body.love .tog-track{
+        background:var(--l-stroke);
+        border-color:var(--l-stroke);
+    }
+    .tog-thumb{
+        position:absolute;
+        top:4px;
+        width:20px;height:20px;border-radius:50%;
+        box-shadow:0 1px 5px rgba(0,0,0,.25);
+        transition:left .55s cubic-bezier(.4,0,.2,1),background .55s;
+        /* Sleep = thumb right */
+        left:30px;
+        background:var(--s-stroke);
+    }
+    body.love .tog-thumb{
+        left:4px;
+        background:#fff;
+    }
 
-    .sub-logo{width:150px;max-width:75%;margin-bottom:20px}
+    /* ── SPLIT SECTION ── */
+    .split{
+        display:flex;
+        min-height:100vh;
+    }
+    .panel{
+        flex:1;
+        display:flex;flex-direction:column;
+        align-items:center;justify-content:center;
+        padding:60px 32px;
+        overflow:hidden;
+        transition:flex var(--ease),opacity var(--ease);
+    }
+    .panel-sleep{background:var(--s-bg)}
+    .panel-love{background:var(--l-bg)}
 
-    .side-heading{font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:300;
-                    letter-spacing:.08em;margin-bottom:6px}
-    .s-love .side-heading{color:var(--love-text)}
-    .s-sleep .side-heading{color:var(--sleep-text)}
+    /* Default sleep mode: sleep panel expanded */
+    body:not(.love) .panel-sleep{flex:2.5;opacity:1}
+    body:not(.love) .panel-love{flex:.5;opacity:.28}
+    body.love .panel-sleep{flex:.5;opacity:.28}
+    body.love .panel-love{flex:2.5;opacity:1}
 
-    .side-tag{font-size:.57rem;letter-spacing:.36em;text-transform:uppercase;
-                font-weight:300;margin-bottom:30px}
-    .s-love .side-tag{color:var(--love-sub)}
-    .s-sleep .side-tag{color:var(--sleep-sub)}
+    .divider{
+        width:1px;flex-shrink:0;align-self:stretch;
+        background:linear-gradient(to bottom,
+                                       transparent,rgba(128,128,128,.2) 30%,
+                                       rgba(128,128,128,.2) 70%,transparent);
+    }
 
-    .pgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;max-width:400px;width:100%}
-    .pcard{border-radius:12px;aspect-ratio:3/4;display:flex;flex-direction:column;
-             align-items:center;justify-content:flex-end;padding:13px;cursor:pointer;
-             transition:transform .3s,box-shadow .3s}
-    .pcard:hover{transform:translateY(-4px);box-shadow:0 10px 26px rgba(0,0,0,.17)}
-    .s-love .pcard{background:var(--love-card)}
-    .s-sleep .pcard{background:var(--sleep-card)}
-    .p-icon{font-size:2.2rem;margin-bottom:7px;opacity:.65}
-    .p-name{font-family:'Cormorant Garamond',serif;font-size:.95rem;font-weight:400;
-              letter-spacing:.05em;text-align:center}
-    .s-love .p-name{color:var(--love-text)}
-    .s-sleep .p-name{color:var(--sleep-text)}
-    .p-price{font-size:.66rem;letter-spacing:.1em;margin-top:3px;font-weight:300}
-    .s-love .p-price{color:var(--love-stroke)}
-    .s-sleep .p-price{color:var(--sleep-stroke)}
+    /* Sub logo */
+    .sub-logo-svg{
+        width:140px;max-width:70%;
+        margin-bottom:20px;
+    }
 
-    .cta{margin-top:24px;padding:12px 30px;border:none;border-radius:28px;
-           font-family:'Montserrat',sans-serif;font-size:.68rem;font-weight:500;
-           letter-spacing:.22em;text-transform:uppercase;cursor:pointer;
-           transition:transform .3s,box-shadow .3s}
-    .cta:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.18)}
-    .s-love .cta{background:var(--love-stroke);color:#fff}
-    .s-sleep .cta{background:var(--sleep-card);color:var(--sleep-text);border:1px solid var(--sleep-stroke)}
+    /* Section headings */
+    .panel-title{
+        font-family:'Cormorant Garamond',serif;
+        font-size:2.8rem;font-weight:300;
+        letter-spacing:.1em;margin-bottom:6px;
+    }
+    .panel-sleep .panel-title{color:var(--s-ink)}
+    .panel-love .panel-title{color:var(--l-ink)}
 
-    .divider{width:1px;flex-shrink:0;align-self:stretch;
-               background:linear-gradient(to bottom,transparent,rgba(140,140,140,.25),transparent)}
+    .panel-tag{
+        font-size:.58rem;letter-spacing:.38em;
+        text-transform:uppercase;font-weight:300;
+        margin-bottom:34px;
+    }
+    .panel-sleep .panel-tag{color:var(--s-muted)}
+    .panel-love .panel-tag{color:var(--l-muted)}
 
-    .nav-ov{position:fixed;inset:0;z-index:300;display:flex;flex-direction:column;
-              align-items:center;justify-content:center;gap:28px;
-              opacity:0;pointer-events:none;transition:opacity .4s}
+    /* Product grid */
+    .pgrid{
+        display:grid;grid-template-columns:repeat(2,1fr);
+        gap:14px;width:100%;max-width:400px;
+    }
+    .pcard{
+        border-radius:14px;
+        aspect-ratio:3/4;
+        display:flex;flex-direction:column;
+        align-items:center;justify-content:flex-end;
+        padding:14px;cursor:pointer;
+        transition:transform .3s,box-shadow .3s;
+    }
+    .pcard:hover{
+        transform:translateY(-5px);
+        box-shadow:0 14px 32px rgba(0,0,0,.22);
+    }
+    .panel-sleep .pcard{background:var(--s-card)}
+    .panel-love .pcard{background:var(--l-card)}
+
+    .picon{font-size:2.2rem;margin-bottom:8px;opacity:.7}
+    .pname{
+        font-family:'Cormorant Garamond',serif;
+        font-size:1rem;font-weight:400;
+        letter-spacing:.05em;text-align:center;
+    }
+    .panel-sleep .pname{color:var(--s-ink)}
+    .panel-love .pname{color:var(--l-ink)}
+
+    .pprice{font-size:.68rem;letter-spacing:.1em;margin-top:3px;font-weight:300}
+    .panel-sleep .pprice{color:var(--s-stroke)}
+    .panel-love .pprice{color:var(--l-stroke)}
+
+    .shop-btn{
+        margin-top:26px;padding:12px 32px;
+        border:none;border-radius:30px;
+        font-family:'Montserrat',sans-serif;
+        font-size:.68rem;font-weight:500;
+        letter-spacing:.24em;text-transform:uppercase;
+        cursor:pointer;
+        transition:transform .3s,box-shadow .3s,opacity .3s;
+    }
+    .shop-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.2)}
+    .panel-sleep .shop-btn{
+        background:var(--s-stroke);color:#fff;
+    }
+    .panel-love .shop-btn{
+        background:var(--l-stroke);color:#fff;
+    }
+
+    /* ── NAV OVERLAY ── */
+    .nav-ov{
+        position:fixed;inset:0;z-index:999;
+        display:flex;flex-direction:column;
+        align-items:center;justify-content:center;
+        gap:30px;
+        opacity:0;pointer-events:none;
+        transition:opacity .4s;
+    }
     .nav-ov.open{opacity:1;pointer-events:all}
-    body:not(.sleep) .nav-ov{background:rgba(240,226,216,.97)}
-    body.sleep .nav-ov{background:rgba(27,37,64,.97)}
-    .nav-close{position:absolute;top:28px;right:24px;background:none;border:none;
-                 font-size:1.7rem;cursor:pointer;transition:color .3s}
-    body:not(.sleep) .nav-close{color:var(--love-text)}
-    body.sleep .nav-close{color:var(--sleep-stroke)}
-    .nav-a{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:300;
-             letter-spacing:.14em;text-transform:uppercase;text-decoration:none;
-             opacity:.8;transition:opacity .3s}
-    .nav-a:hover{opacity:1}
-    body:not(.sleep) .nav-a{color:var(--love-text)}
-    body.sleep .nav-a{color:var(--sleep-text)}
+    body:not(.love) .nav-ov{background:rgba(19,29,52,.97)}
+    body.love .nav-ov{background:rgba(244,236,230,.97)}
 
-    footer{text-align:center;padding:22px;font-size:.58rem;letter-spacing:.2em;
-             text-transform:uppercase;opacity:.38;font-weight:300}
+    .nav-close{
+        position:absolute;top:28px;right:24px;
+        background:none;border:none;
+        font-size:1.8rem;cursor:pointer;
+        transition:color .3s;
+    }
+    body:not(.love) .nav-close{color:var(--s-stroke)}
+    body.love .nav-close{color:var(--l-muted)}
+
+    .nav-link{
+        font-family:'Cormorant Garamond',serif;
+        font-size:2rem;font-weight:300;
+        letter-spacing:.15em;text-transform:uppercase;
+        text-decoration:none;opacity:.75;
+        transition:opacity .3s;
+    }
+    .nav-link:hover{opacity:1}
+    body:not(.love) .nav-link{color:var(--s-ink)}
+    body.love .nav-link{color:var(--l-ink)}
+
+    /* ── FOOTER ── */
+    footer{
+        text-align:center;padding:24px;
+        font-size:.58rem;letter-spacing:.22em;
+        text-transform:uppercase;opacity:.32;font-weight:300;
+    }
 
     @media(max-width:680px){
         .split{flex-direction:column}
-        .divider{width:60%;height:1px;align-self:center;
-                     background:linear-gradient(to right,transparent,rgba(140,140,140,.25),transparent)}
-        .logo-main{width:260px}
+        .divider{
+              width:60%;height:1px;align-self:center;
+              background:linear-gradient(to right,transparent,rgba(128,128,128,.2),transparent);
+        }
+        .logo-primary{width:260px}
+        body:not(.love) .panel-love,
+        body.love .panel-sleep{min-height:35vh}
     }
     </style>
   </head>
   <body id="B">
 
-    <nav class="nav-ov" id="nav">
-        <button class="nav-close" id="navX">&#x2715;</button>button>
-        <a href="#" class="nav-a">Shop</a>a>
-        <a href="#" class="nav-a">Collections</a>a>
-        <a href="#" class="nav-a">Our Story</a>a>
-        <a href="#" class="nav-a">Gift Cards</a>a>
-        <a href="#" class="nav-a">Contact</a>a>
+    <!-- NAV OVERLAY -->
+    <nav class="nav-ov" id="navOv">
+        <button class="nav-close" id="navClose">&#x2715;</button>button>
+        <a href="#" class="nav-link">Shop All</a>a>
+        <a href="#" class="nav-link">Collections</a>a>
+        <a href="#" class="nav-link">Our Story</a>a>
+        <a href="#" class="nav-link">Gift Cards</a>a>
+        <a href="#" class="nav-link">Contact</a>a>
     </nav>nav>
 
     <header>
-        <button class="menu-btn" id="menuBtn"><span></span><span></span><span></span></button>button>
+        <!-- HAMBURGER — top right -->
+        <button class="ham" id="hamBtn" aria-label="Menu">
+              <span></span>
+            <span></span>
+            <span></span>
+        </button>button>
     
       <!--
-        PRIMARY LOGO — top section of reference image
-        Icon: left half = thin soft heart curve in rose-copper (stroke only, no fill)
-              right half = solid navy D letterform (filled, with gentle curve)
-        They share a vertical center axis.
-        Typography: "love" in italic Cormorant rose-copper, "sleep" upright navy
-        Toggle pill between the words. Tagline in small tracking below.
+        PRIMARY LOGO
+        Concept: A crescent moon gently cradling a rose-gold heart.
+        The moon = sleep, comfort, rest, night.
+        The heart inside = love, warmth, intimacy.
+        Together they form the brand: lovetosleep.
+        Wordmark: italic "love" + small "to" + upright "sleep"
       -->
-      <svg class="logo-main" viewBox="0 0 300 155" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-                  <!-- Soft rose-copper gradient for heart stroke -->
-                  <linearGradient id="heartG" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#d09880"/>
-                            <stop offset="60%" stop-color="#b87868"/>
-                            <stop offset="100%" stop-color="#a06858"/>
-                  </linearGradient>linearGradient>
-                  <!-- Navy fill for D -->
-                  <linearGradient id="dNavy" x1="0%" y1="0%" x2="60%" y2="100%">
-                            <stop offset="0%" stop-color="#2e3f5e"/>
-                            <stop offset="100%" stop-color="#1c2a42"/>
-                  </linearGradient>linearGradient>
-                  <!-- Rose-copper text -->
-                  <linearGradient id="loveText" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stop-color="#c08878"/>
-                            <stop offset="100%" stop-color="#9a6858"/>
-                  </linearGradient>linearGradient>
-          </defs>
-
-            <!--
-              ICON centered at x=150, top of icon y=14, bottom y=86
-              Heart left half: thin soft stroke, rose-copper
-              The heart curves softly — left lobe sweeps up and curves to the centerline
-              Right half: solid D shape in navy — a filled closed path
-            -->
-
-            <!-- LEFT HEART HALF — very thin soft rose stroke, organic curves -->
-            <!-- Path: starts at center-bottom (150,86), curves up-left through lobe, 
-                 around top-left, up to center-top (150,14) -->
-            <path d="M 150,86
-                           C 134,76 112,62 107,47
-                           C 102,32 110,19 122,17
-                           C 132,15 143,22 150,33"
-                        fill="none"
-                        stroke="url(#heartG)"
-                        stroke-width="2.2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"/>
-            <!-- Top arch of left lobe up to center top -->
-            <path d="M 122,17
-                           C 128,11 140,12 150,22"
-                        fill="none"
-                        stroke="url(#heartG)"
-                        stroke-width="2.2"
-                        stroke-linecap="round"/>
-
-            <!-- RIGHT D — solid filled navy shape, softly curved -->
-            <!-- Vertical left edge of D (shared spine at x=150) -->
-            <!-- D path: top of spine, curves right and around, back to bottom of spine -->
-            <path d="M 150,14
-                           C 166,14 180,20 187,31
-                           C 194,42 194,58 187,69
-                           C 180,80 166,86 150,86 Z"
-                        fill="url(#dNavy)"
-                        opacity="0.92"/>
-            <!-- Thin vertical spine line on left edge of D -->
-            <line x1="150" y1="14" x2="150" y2="86"
-                        stroke="#1c2a42" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-
-            <!-- WORDMARK -->
-            <!-- "love" italic rose-copper -->
-            <text x="58" y="114"
-                        font-family="'Cormorant Garamond',Georgia,serif"
-                        font-style="italic"
-                        font-size="30"
-                        font-weight="400"
-                        letter-spacing="1.5"
-                        fill="url(#loveText)">love</text>text>
-
-            <!-- TOGGLE PILL (centered between words) -->
-            <rect x="162" y="100" width="34" height="18" rx="9" fill="#b87868" opacity=".9"/>
-            <circle cx="172" cy="109" r="7" fill="white" opacity=".95"/>
-
-            <!-- "sleep" upright navy -->
-            <text x="203" y="114"
-                        font-family="'Cormorant Garamond',Georgia,serif"
-                        font-size="30"
-                        font-weight="400"
-                        letter-spacing="1.5"
-                        fill="#1e2d46">sleep</text>text>
-
-            <!-- TAGLINE -->
-            <text x="150" y="138"
-                        font-family="'Montserrat',Arial,sans-serif"
-                        font-size="6.5"
-                        font-weight="300"
-                        letter-spacing="5"
-                        fill="#a08878"
-                        text-anchor="middle">TWO SIDES. ONE YOU.</text>text>
-      </svg>svg>
-
-        <div class="toggle-row">
-              <span class="t-word t-love">Love</span>
-              <button class="pill" id="tog">
-                      <div class="pill-track"></div>div>
-                      <div class="pill-thumb"></div>div>
-              </button>button>
-              <span class="t-word t-sleep">Sleep</span>
-        </div>div>
+      <div class="logo-wrap">
+          <svg class="logo-primary" viewBox="0 0 300 175" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                          <linearGradient id="cres" x1="20%" y1="0%" x2="90%" y2="100%">
+                                      <stop offset="0%" stop-color="#334e72"/>
+                                      <stop offset="100%" stop-color="#1c2e48"/>
+                          </linearGradient>linearGradient>
+                          <radialGradient id="hrt" cx="38%" cy="32%" r="68%">
+                                      <stop offset="0%" stop-color="#e0a898"/>
+                                      <stop offset="60%" stop-color="#c07868"/>
+                                      <stop offset="100%" stop-color="#a06050"/>
+                          </radialGradient>radialGradient>
+                          <linearGradient id="loveTx" x1="0%" y1="0%" x2="0%" y2="100%">
+                                      <stop offset="0%" stop-color="#cc9080"/>
+                                      <stop offset="100%" stop-color="#a07060"/>
+                          </linearGradient>linearGradient>
+                          <filter id="hglow" x="-40%" y="-40%" width="180%" height="180%">
+                                      <feGaussianBlur stdDeviation="3" result="b"/>
+                                      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                          </filter>filter>
+                        <filter id="cglow" x="-20%" y="-20%" width="140%" height="140%">
+                                  <feGaussianBlur stdDeviation="2.5" result="b"/>
+                                  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                        </filter>filter>
+                </defs>
+          
+                <!-- CRESCENT MOON — faces right, navy -->
+                <!-- Subtle outer glow -->
+                <path d="M 146,12 C 120,20 100,44 100,70 C 100,96 120,118 146,126
+                                 C 118,118 98,96 98,68 C 98,42 116,20 146,12 Z"
+                              fill="#334e72" opacity=".18" filter="url(#cglow)"/>
+                <!-- Crescent body -->
+                <path d="M 146,12
+                                 C 120,20 100,44 100,70
+                                 C 100,96 120,118 146,126
+                                 C 118,116 100,94 100,68
+                                 C 100,44 118,22 146,12 Z"
+                              fill="url(#cres)" opacity=".92"/>
+                <!-- Crescent inner edge highlight -->
+                <path d="M 146,12 C 120,22 102,44 102,68 C 102,92 120,116 146,126"
+                              fill="none" stroke="rgba(100,140,190,0.3)" stroke-width="1.2" stroke-linecap="round"/>
+          
+                <!-- HEART — rose-gold, nestled in crescent cup, soft glow -->
+                <path d="M 146,98
+                                 C 134,90 120,80 120,68
+                                 C 120,58 128,52 136,54
+                                 C 140,55 143,58 146,63
+                                 C 149,58 152,55 156,54
+                                 C 164,52 172,58 172,68
+                                 C 172,80 158,90 146,98 Z"
+                              fill="url(#hrt)"
+                              filter="url(#hglow)"
+                              opacity=".9"/>
+          
+                <!-- WORDMARK: italic "love" + small "to" + upright "sleep" -->
+                <text x="34" y="146"
+                              font-family="'Cormorant Garamond',Georgia,serif"
+                              font-style="italic"
+                              font-size="34"
+                              font-weight="400"
+                              letter-spacing="1"
+                              fill="url(#loveTx)">love</text>text>
+          
+                <text x="166" y="140"
+                              font-family="'Cormorant Garamond',Georgia,serif"
+                              font-style="italic"
+                              font-size="13"
+                              font-weight="300"
+                              letter-spacing="1"
+                              fill="#a09088">to</text>text>
+          
+                <text x="186" y="146"
+                              font-family="'Cormorant Garamond',Georgia,serif"
+                              font-size="34"
+                              font-weight="400"
+                              letter-spacing="1"
+                              fill="#1e2d48">sleep</text>text>
+          
+                <!-- TAGLINE -->
+                <text x="150"
+                              y="168"
+                              font-family="'Montserrat',Arial,sans-serif"
+                              font-size="7"
+                              font-weight="300"
+                              letter-spacing="5.5"
+                              fill="#a09088"
+                              text-anchor="middle">TWO SIDES. ONE YOU.</text>text>
+          </svg>svg>
+      </div>div>
+    
+      <!-- TOGGLE — default: sleep active (right) -->
+      <div class="tog-row">
+          <span class="tog-label lbl-sleep">Sleep</span>
+          <button class="tog-btn" id="togBtn" aria-label="Toggle Sleep / Love">
+                <div class="tog-track"></div>div>
+                <div class="tog-thumb"></div>div>
+          </button>button>
+          <span class="tog-label lbl-love">Love</span>
+      </div>div>
     </header>
-
-    <section class="split">
-
-        <!-- LOVE SIDE -->
-        <div class="side s-love">
-              <!--
-                LOVE SUB-LOGO — bottom-left of reference
-                Single thin heart outline, soft glowing rose-gold on copper background
-                Very delicate stroke, slightly luminous inner highlight curve
-                Small heart accent below the text
-                "love" in italic serif below the icon
-              -->
-              <svg class="sub-logo" viewBox="0 0 160 175" xmlns="http://www.w3.org/2000/svg">
-                      <defs>
-                                <!-- Warm luminous rose-gold — soft glow feel -->
-                                <linearGradient id="lhG" x1="25%" y1="0%" x2="75%" y2="100%">
-                                            <stop offset="0%" stop-color="#e8c8b0"/>
-                                            <stop offset="35%" stop-color="#d4a888"/>
-                                            <stop offset="100%" stop-color="#bc9070"/>
-                                </linearGradient>linearGradient>
-                                <!-- Inner soft highlight -->
-                                <linearGradient id="lhHi" x1="10%" y1="5%" x2="90%" y2="90%">
-                                            <stop offset="0%" stop-color="#f8e0cc" stop-opacity=".95"/>
-                                            <stop offset="50%" stop-color="#e8c4a0" stop-opacity=".5"/>
-                                            <stop offset="100%" stop-color="#d0a880" stop-opacity=".1"/>
-                                </linearGradient>linearGradient>
-                                <!-- Glow filter for soft luminance -->
-                                <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
-                                            <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
-                                            <feMerge>
-                                                          <feMergeNode in="blur"/>
-                                                          <feMergeNode in="SourceGraphic"/>
-                                            </feMerge>
-                                </filter>filter>
-                      </defs>
-
-                      <!-- Heart outline — thin, soft, slightly glowing -->
-                      <!-- Outer glow pass (blurred duplicate) -->
-                      <path d="M 80,124
-                                       C 60,110 34,94 26,70
-                                       C 19,50 30,33 46,32
-                                       C 58,31 71,40 80,53
-                                       C 89,40 102,31 114,32
-                                       C 130,33 141,50 134,70
-                                       C 126,94 100,110 80,124 Z"
-                                    fill="none"
-                                    stroke="#e0b898"
-                                    stroke-width="5"
-                                    stroke-linejoin="round"
-                                    opacity="0.25"/>
-                      <!-- Main heart stroke -->
-                      <path d="M 80,124
-                                       C 60,110 34,94 26,70
-                                       C 19,50 30,33 46,32
-                                       C 58,31 71,40 80,53
-                                       C 89,40 102,31 114,32
-                                       C 130,33 141,50 134,70
-                                       C 126,94 100,110 80,124 Z"
-                                    fill="none"
-                                    stroke="url(#lhG)"
-                                    stroke-width="2.4"
-                                    stroke-linejoin="round"/>
-                      <!-- Inner highlight arc — the soft luminous line visible inside the heart -->
-                      <path d="M 80,53
-                                       C 89,41 103,33 115,35
-                                       C 126,37 136,47 133,62"
-                                    fill="none"
-                                    stroke="url(#lhHi)"
-                                    stroke-width="1.6"
-                                    stroke-linecap="round"
-                                    opacity="0.8"/>
-
-                      <!-- "love" — italic, delicate, rose-toned -->
-                      <text x="80" y="148"
-                                    font-family="'Cormorant Garamond',Georgia,serif"
-                                    font-style="italic"
-                                    font-size="26"
-                                    font-weight="400"
-                                    letter-spacing="2"
-                                    fill="url(#lhG)"
-                                    text-anchor="middle">love</text>text>
-
-                      <!-- Small heart accent (the tiny heart under the text in reference) -->
-                      <path d="M 80,155 C 78.5,153 76,152 76,154.5 C 76,157 80,159.5 80,159.5 C 80,159.5 84,157 84,154.5 C 84,152 81.5,153 80,155 Z"
-                                    fill="url(#lhG)" opacity=".7"/>
-
-                      <!-- Tagline -->
-                      <text x="80" y="170"
-                                    font-family="'Montserrat',Arial,sans-serif"
-                                    font-size="5"
-                                    font-weight="300"
-                                    letter-spacing="3.5"
-                                    fill="#c0a090"
-                                    text-anchor="middle">SENSUAL. INTIMATE. YOU.</text>text>
-              </svg>svg>
-
-              <h2 class="side-heading">love</h2>h2>
-              <p class="side-tag">Sensual. Intimate. You.</p>p>
-              <div class="pgrid">
-                      <div class="pcard"><div class="p-icon">🌹</div>div><div class="p-name">Velvet Kiss Set</div>div><div class="p-price">$98</div>div></div>div>
-                      <div class="pcard"><div class="p-icon">🌸</div>div><div class="p-name">Silk Whisper Robe</div>div><div class="p-price">$128</div>div></div>div>
-                      <div class="pcard"><div class="p-icon">✨</div>div><div class="p-name">Lace Reverie</div>div><div class="p-price">$76</div>div></div>div>
-                      <div class="pcard"><div class="p-icon">🫦</div>div><div class="p-name">Midnight Satin</div>div><div class="p-price">$88</div>div></div>div>
+  
+  <!-- SPLIT PANELS -->
+  <section class="split">
+  
+    <!-- SLEEP PANEL (left by default, expanded) -->
+    <div class="panel panel-sleep">
+        <!-- Sleep sub-logo: crescent moon with soft stars -->
+        <svg class="sub-logo-svg" viewBox="0 0 140 155" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                      <radialGradient id="mrad" cx="28%" cy="28%" r="72%">
+                                <stop offset="0%" stop-color="#c0d8f4"/>
+                                <stop offset="55%" stop-color="#8aaace"/>
+                                <stop offset="100%" stop-color="#5a7aa8"/>
+                      </radialGradient>radialGradient>
+                      <filter id="msg">
+                                <feGaussianBlur stdDeviation="3" result="b"/>
+                                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                      </filter>filter>
+              </defs>
+              <!-- Glow -->
+              <path d="M 70,14 C 44,22 24,44 24,70 C 24,96 44,118 70,126 C 44,116 26,94 26,70 C 26,46 44,24 70,14 Z"
+                            fill="#8aaace" opacity=".12" filter="url(#msg)"/>
+              <!-- Crescent -->
+              <path d="M 70,14 C 44,22 24,46 24,70 C 24,94 44,118 70,126
+                               C 44,116 28,92 28,68 C 28,44 46,22 70,14 Z"
+                            fill="url(#mrad)" opacity=".88"/>
+              <path d="M 70,14 C 46,22 28,46 28,68 C 28,92 46,116 70,126"
+                            fill="none" stroke="rgba(140,180,220,0.35)" stroke-width="1" stroke-linecap="round"/>
+              <!-- Stars -->
+              <circle cx="96" cy="22" r="1.8" fill="#a0c0e0" opacity=".75"/>
+              <circle cx="108" cy="42" r="1.2" fill="#a0c0e0" opacity=".55"/>
+              <circle cx="100" cy="60" r="1.4" fill="#b0d0f0" opacity=".65"/>
+              <circle cx="110" cy="82" r="1" fill="#a0c0e0" opacity=".5"/>
+              <circle cx="90" cy="32" r=".9" fill="#c0d8f8" opacity=".6"/>
+              <!-- Text -->
+              <text x="70" y="142" font-family="'Cormorant Garamond',Georgia,serif"
+                            font-size="22" font-weight="400" letter-spacing="3"
+                            fill="url(#mrad)" text-anchor="middle">sleep</text>text>
+              <text x="70" y="153" font-family="'Montserrat',Arial,sans-serif"
+                            font-size="5" font-weight="300" letter-spacing="3.2"
+                            fill="var(--s-muted)" text-anchor="middle">COMFORT. REST. YOU.</text>text>
+        </svg>svg>
+    
+        <h2 class="panel-title">sleep</h2>h2>
+        <p class="panel-tag">Comfort. Rest. You.</p>p>
+    
+        <div class="pgrid">
+              <div class="pcard">
+                      <div class="picon">🌙</div>div>
+                      <div class="pname">Cloud Fleece Set</div>div>
+                      <div class="pprice">$88</div>div>
               </div>div>
-              <button class="cta">Shop Love</button>button>
-        </div>div>
-
-        <div class="divider"></div>div>
-
-        <!-- SLEEP SIDE -->
-        <div class="side s-sleep">
-              <!--
-                SLEEP SUB-LOGO — bottom-right of reference
-                Same combined icon (thin heart left + D right) but all in soft silver-blue on navy
-                Heart left half: very thin soft stroke, silver-blue
-                D right half: thick curved stroke (NOT filled solid — more like an open crescent arc)
-                Small crescent moon accent below the text
-                "sleep" in upright soft serif below
-              -->
-              <svg class="sub-logo" viewBox="0 0 160 185" xmlns="http://www.w3.org/2000/svg">
-                      <defs>
-                                <linearGradient id="shG" x1="20%" y1="0%" x2="80%" y2="100%">
-                                            <stop offset="0%" stop-color="#a8c0dc"/>
-                                            <stop offset="50%" stop-color="#8aa2c0"/>
-                                            <stop offset="100%" stop-color="#6a88a8"/>
-                                </linearGradient>linearGradient>
-                                <!-- Soft highlight inside D/crescent -->
-                                <linearGradient id="shHi" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" stop-color="#c8ddf0" stop-opacity=".7"/>
-                                            <stop offset="100%" stop-color="#8aa2c0" stop-opacity=".1"/>
-                                </linearGradient>linearGradient>
-                                <filter id="sleepGlow" x="-30%" y="-30%" width="160%" height="160%">
-                                            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
-                                            <feMerge>
-                                                          <feMergeNode in="blur"/>
-                                                          <feMergeNode in="SourceGraphic"/>
-                                            </feMerge>
-                                </filter>filter>
-                      </defs>
-
-                      <!-- LEFT HEART HALF — thin soft silver stroke -->
-                      <!-- Outer glow -->
-                      <path d="M 80,118 C 66,108 48,96 42,80 C 36,64 44,50 55,48 C 64,47 74,55 80,66"
-                                    fill="none" stroke="#8aa2c0" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.2"/>
-                      <!-- Main stroke -->
-                      <path d="M 80,118 C 66,108 48,96 42,80 C 36,64 44,50 55,48 C 64,47 74,55 80,66"
-                                    fill="none" stroke="url(#shG)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      <!-- Top arch of left lobe -->
-                      <path d="M 55,48 C 62,42 74,43 80,54"
-                                    fill="none" stroke="url(#shG)" stroke-width="2" stroke-linecap="round"/>
-                      <!-- Top connection up to center top -->
-                      <path d="M 80,42 C 74,36 63,36 56,42"
-                                    fill="none" stroke="url(#shG)" stroke-width="2" stroke-linecap="round"/>
-
-                      <!-- RIGHT D — thick curved stroke (open crescent style, not filled solid) -->
-                      <!-- Outer glow pass -->
-                      <path d="M 80,42 C 100,42 116,52 120,66 C 124,80 120,96 110,106 C 102,114 92,118 80,118"
-                                    fill="none" stroke="#8aa2c0" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" opacity="0.18"/>
-                      <!-- Main D stroke — this creates the filled-look via thick stroke -->
-                      <path d="M 80,42 C 100,42 116,52 120,66 C 124,80 120,96 110,106 C 102,114 92,118 80,118"
-                                    fill="none" stroke="url(#shG)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
-                      <!-- Inner highlight on D -->
-                      <path d="M 80,50 C 97,52 110,62 112,76 C 114,88 108,100 98,108"
-                                    fill="none" stroke="url(#shHi)" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
-
-                      <!-- "sleep" — upright, light weight, silver-blue -->
-                      <text x="80" y="146"
-                                    font-family="'Cormorant Garamond',Georgia,serif"
-                                    font-size="26"
-                                    font-weight="400"
-                                    letter-spacing="2"
-                                    fill="url(#shG)"
-                                    text-anchor="middle">sleep</text>text>
-
-                      <!-- Small crescent moon accent (visible under "sleep" text in reference) -->
-                      <path d="M 80,152 C 76,152 72,155 74,159 C 76,163 84,162 86,158 C 88,154 84,150 80,152 Z"
-                                    fill="url(#shG)" opacity=".55"/>
-
-                      <!-- Tagline -->
-                      <text x="80" y="174"
-                                    font-family="'Montserrat',Arial,sans-serif"
-                                    font-size="5"
-                                    font-weight="300"
-                                    letter-spacing="3.5"
-                                    fill="#7090b0"
-                                    text-anchor="middle">COMFORT. REST. YOU.</text>text>
-              </svg>svg>
-
-              <h2 class="side-heading">sleep</h2>h2>
-              <p class="side-tag">Comfort. Rest. You.</p>p>
-              <div class="pgrid">
-                      <div class="pcard"><div class="p-icon">🌙</div>div><div class="p-name">Cloud Fleece Set</div>div><div class="p-price">$88</div>div></div>div>
-                      <div class="pcard"><div class="p-icon">⭐</div>div><div class="p-name">Dream Cotton PJ</div>div><div class="p-price">$72</div>div></div>div>
-                      <div class="pcard"><div class="p-icon">🌌</div>div><div class="p-name">Stargazer Shorts</div>div><div class="p-price">$54</div>div></div>div>
-                      <div class="pcard"><div class="p-icon">🌿</div>div><div class="p-name">Bamboo Serenity</div>div><div class="p-price">$96</div>div></div>div>
+              <div class="pcard">
+                      <div class="picon">⭐</div>div>
+                      <div class="pname">Dream Cotton PJ</div>div>
+                      <div class="pprice">$72</div>div>
               </div>div>
-              <button class="cta">Shop Sleep</button>button>
+              <div class="pcard">
+                      <div class="picon">🌌</div>div>
+                      <div class="pname">Stargazer Shorts</div>div>
+                      <div class="pprice">$54</div>div>
+              </div>div>
+              <div class="pcard">
+                      <div class="picon">🌿</div>div>
+                      <div class="pname">Bamboo Serenity</div>div>
+                      <div class="pprice">$96</div>div>
+              </div>div>
         </div>div>
-
-    </section>section>
-
-    <footer>&copy; 2026 lovetosleep &nbsp;&bull;&nbsp; Two Sides, One You</footer>
+        <button class="shop-btn">Shop Sleep</button>button>
+    </div>div>
+  
+    <div class="divider"></div>div>
+  
+    <!-- LOVE PANEL (right by default, minimised) -->
+    <div class="panel panel-love">
+        <!-- Love sub-logo: glowing heart -->
+        <svg class="sub-logo-svg" viewBox="0 0 140 155" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                      <radialGradient id="hrad2" cx="38%" cy="32%" r="68%">
+                                <stop offset="0%" stop-color="#fce4d4"/>
+                                <stop offset="50%" stop-color="#e0a898"/>
+                                <stop offset="100%" stop-color="#c08070"/>
+                      </radialGradient>radialGradient>
+                      <filter id="lhg2">
+                                <feGaussianBlur stdDeviation="3.5" result="b"/>
+                                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                      </filter>filter>
+              </defs>
+              <!-- Heart glow -->
+              <path d="M 70,118 C 40,100 10,78 10,52 C 10,32 26,18 44,20 C 54,21 64,29 70,42 C 76,29 86,21 96,20 C 114,18 130,32 130,52 C 130,78 100,100 70,118 Z"
+                            fill="#e8b8a8" opacity=".2" filter="url(#lhg2)"/>
+              <!-- Heart outline -->
+              <path d="M 70,118 C 40,100 10,78 10,52 C 10,32 26,18 44,20 C 54,21 64,29 70,42 C 76,29 86,21 96,20 C 114,18 130,32 130,52 C 130,78 100,100 70,118 Z"
+                            fill="none" stroke="url(#hrad2)" stroke-width="2.6" stroke-linejoin="round"/>
+              <!-- Sheen -->
+              <path d="M 70,42 C 76,30 87,22 97,22 C 110,22 122,32 120,47"
+                            fill="none" stroke="rgba(252,230,212,0.75)" stroke-width="1.8" stroke-linecap="round"/>
+              <!-- Text -->
+              <text x="70" y="136" font-family="'Cormorant Garamond',Georgia,serif"
+                            font-style="italic" font-size="22" font-weight="400" letter-spacing="3"
+                            fill="url(#hrad2)" text-anchor="middle">love</text>text>
+              <text x="70" y="149" font-family="'Montserrat',Arial,sans-serif"
+                            font-size="5" font-weight="300" letter-spacing="3.2"
+                            fill="var(--l-muted)" text-anchor="middle">SENSUAL. INTIMATE. YOU.</text>text>
+        </svg>svg>
+    
+        <h2 class="panel-title">love</h2>h2>
+        <p class="panel-tag">Sensual. Intimate. You.</p>p>
+    
+        <div class="pgrid">
+              <div class="pcard">
+                      <div class="picon">🌹</div>div>
+                      <div class="pname">Velvet Kiss Set</div>div>
+                      <div class="pprice">$98</div>div>
+              </div>div>
+              <div class="pcard">
+                      <div class="picon">🌸</div>div>
+                      <div class="pname">Silk Whisper Robe</div>div>
+                      <div class="pprice">$128</div>div>
+              </div>div>
+              <div class="pcard">
+                      <div class="picon">✨</div>div>
+                      <div class="pname">Lace Reverie</div>div>
+                      <div class="pprice">$76</div>div>
+              </div>div>
+              <div class="pcard">
+                      <div class="picon">🫦</div>div>
+                      <div class="pname">Midnight Satin</div>div>
+                      <div class="pprice">$88</div>div>
+              </div>div>
+        </div>div>
+        <button class="shop-btn">Shop Love</button>button>
+    </div>div>
+  
+  </section>section>
+  
+  <footer>&copy; 2026 lovetosleep &nbsp;&bull;&nbsp; Two Sides, One You</footer>
   
   <script>
-    const B=document.getElementById('B');
-    const tog=document.getElementById('tog');
-    const menuBtn=document.getElementById('menuBtn');
-    const nav=document.getElementById('nav');
-    const navX=document.getElementById('navX');
-    let state=0;
-    tog.addEventListener('click',()=>{
-        state=(state+1)%3;
-        B.classList.remove('love','sleep');
-        if(state===1)B.classList.add('love');
-        if(state===2)B.classList.add('sleep');
+    const B = document.getElementById('B');
+    const togBtn = document.getElementById('togBtn');
+    const hamBtn = document.getElementById('hamBtn');
+    const navOv = document.getElementById('navOv');
+    const navClose = document.getElementById('navClose');
+
+    // Default state = sleep. Toggle switches to love and back.
+    togBtn.addEventListener('click', () => {
+        B.classList.toggle('love');
     });
-    menuBtn.addEventListener('click',()=>nav.classList.add('open'));
-    navX.addEventListener('click',()=>nav.classList.remove('open'));
-    nav.addEventListener('click',e=>{ if(e.target===nav) nav.classList.remove('open'); });
+
+    hamBtn.addEventListener('click', () => navOv.classList.add('open'));
+    navClose.addEventListener('click', () => navOv.classList.remove('open'));
+    navOv.addEventListener('click', e => {
+        if (e.target === navOv) navOv.classList.remove('open');
+    });
   </script>
   </body>body>
 </html>html>
-  </script></footer>
-                                            </feMerge>
-                                            </feMerge>
-                      </defs>
-          </defs></span></span>
+  </script></footer></feMerge></feMerge>
+                </defs></span></span>
     </header>
   </style></title>
   </head>
