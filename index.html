@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Love to Sleep – Two Sides, One You</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --love-bg: #f5ede8;
+      --love-primary: #c4846a;
+      --love-accent: #e8a090;
+      --love-dark: #8b4f3a;
+      --love-text: #5a3028;
+      --sleep-bg: #1a2340;
+      --sleep-primary: #3d5a80;
+      --sleep-accent: #98c1d9;
+      --sleep-dark: #0d1b2a;
+      --sleep-text: #e0e8f0;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      transition: background 0.6s ease, color 0.6s ease;
+      min-height: 100vh;
+    }
+
+    body.love-mode {
+      background: var(--love-bg);
+      color: var(--love-text);
+    }
+    body.sleep-mode {
+      background: var(--sleep-bg);
+      color: var(--sleep-text);
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 20px 10px;
+      position: relative;
+    }
+
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 28px;
+    }
+
+    .logo-symbol {
+      width: 80px;
+      height: 80px;
+      position: relative;
+    }
+
+    .logo-symbol svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .logo-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .logo-text .love-part {
+      color: var(--love-primary);
+      transition: color 0.6s;
+    }
+    .logo-text .infinity {
+      font-size: 1.4rem;
+      color: var(--love-primary);
+      transition: color 0.6s;
+    }
+    .logo-text .sleep-part {
+      color: var(--sleep-primary);
+      transition: color 0.6s;
+    }
+    body.sleep-mode .logo-text .infinity {
+      color: var(--sleep-accent);
+    }
+
+    .logo-tagline {
+      font-size: 0.62rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      opacity: 0.6;
+      font-weight: 400;
+    }
+
+    /* ── TOGGLE ── */
+    .toggle-section {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin: 8px 0 30px;
+    }
+
+    .toggle-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: opacity 0.4s, color 0.4s;
+    }
+
+    .toggle-label.love {
+      color: var(--love-primary);
+      opacity: 1;
+    }
+    .toggle-label.sleep {
+      color: var(--sleep-accent);
+      opacity: 0.4;
+    }
+
+    body.sleep-mode .toggle-label.love { opacity: 0.4; }
+    body.sleep-mode .toggle-label.sleep { opacity: 1; }
+
+    .toggle-track {
+      width: 70px;
+      height: 34px;
+      border-radius: 17px;
+      background: linear-gradient(135deg, var(--love-primary), var(--love-accent));
+      position: relative;
+      cursor: pointer;
+      transition: background 0.6s ease;
+      border: 2px solid rgba(255,255,255,0.3);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+    body.sleep-mode .toggle-track {
+      background: linear-gradient(135deg, var(--sleep-primary), var(--sleep-accent));
+    }
+
+    .toggle-thumb {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: white;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+
+    body.sleep-mode .toggle-thumb {
+      transform: translateX(36px);
+    }
+
+    /* ── NAV ── */
+    nav {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto 40px;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      font-size: 0.72rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+
+    nav a {
+      text-decoration: none;
+      font-weight: 500;
+      padding-bottom: 4px;
+      border-bottom: 1px solid transparent;
+      transition: all 0.3s;
+    }
+
+    body.love-mode nav a {
+      color: var(--love-text);
+    }
+    body.love-mode nav a:hover {
+      color: var(--love-primary);
+      border-bottom-color: var(--love-primary);
+    }
+    body.sleep-mode nav a {
+      color: var(--sleep-text);
+    }
+    body.sleep-mode nav a:hover {
+      color: var(--sleep-accent);
+      border-bottom-color: var(--sleep-accent);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 20px 20px 50px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .mode-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .mode-subtitle {
+      font-size: 0.78rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 30px;
+    }
+
+    .hero-btn {
+      display: inline-block;
+      padding: 14px 42px;
+      border-radius: 30px;
+      font-size: 0.72rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s;
+      cursor: pointer;
+      border: none;
+    }
+
+    body.love-mode .hero-btn {
+      background: var(--love-primary);
+      color: white;
+      box-shadow: 0 6px 20px rgba(196,132,106,0.4);
+    }
+    body.love-mode .hero-btn:hover {
+      background: var(--love-dark);
+      transform: translateY(-2px);
+    }
+    body.sleep-mode .hero-btn {
+      background: var(--sleep-accent);
+      color: var(--sleep-dark);
+      box-shadow: 0 6px 20px rgba(152,193,217,0.35);
+    }
+    body.sleep-mode .hero-btn:hover {
+      background: #b8d8ea;
+      transform: translateY(-2px);
+    }
+
+    /* ── SECTION CONTENT TRANSITION ── */
+    .mode-content {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+    .mode-content.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── PRODUCTS ── */
+    .products-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 30px 60px;
+    }
+
+    .section-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.9rem;
+      font-weight: 300;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .section-rule {
+      width: 60px;
+      height: 1px;
+      margin: 0 auto 40px;
+    }
+    body.love-mode .section-rule { background: var(--love-primary); }
+    body.sleep-mode .section-rule { background: var(--sleep-accent); }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 28px;
+    }
+
+    .product-card {
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+
+    body.love-mode .product-card {
+      background: white;
+      box-shadow: 0 4px 20px rgba(196,132,106,0.12);
+    }
+    body.sleep-mode .product-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(152,193,217,0.15);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.18);
+    }
+
+    .product-img {
+      width: 100%;
+      height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body.love-mode .product-img { background: linear-gradient(160deg, #fde8e0, #f5c5b5); }
+    body.sleep-mode .product-img { background: linear-gradient(160deg, #1e2d4a, #2a3f60); }
+
+    .product-info {
+      padding: 18px 20px 20px;
+    }
+
+    .product-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .product-desc {
+      font-size: 0.72rem;
+      opacity: 0.65;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .product-price {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    body.love-mode .product-price { color: var(--love-primary); }
+    body.sleep-mode .product-price { color: var(--sleep-accent); }
+
+    .add-to-cart {
+      display: block;
+      width: 100%;
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    body.love-mode .add-to-cart {
+      background: var(--love-bg);
+      color: var(--love-primary);
+      border: 1px solid var(--love-accent);
+    }
+    body.love-mode .add-to-cart:hover {
+      background: var(--love-primary);
+      color: white;
+    }
+    body.sleep-mode .add-to-cart {
+      background: rgba(152,193,217,0.1);
+      color: var(--sleep-accent);
+      border: 1px solid rgba(152,193,217,0.3);
+    }
+    body.sleep-mode .add-to-cart:hover {
+      background: var(--sleep-accent);
+      color: var(--sleep-dark);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.45;
+      border-top: 1px solid currentColor;
+      margin-top: 20px;
+    }
+
+    /* ── BANNER ── */
+    .banner {
+      text-align: center;
+      padding: 12px;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+    body.love-mode .banner { background: var(--love-primary); color: white; }
+    body.sleep-mode .banner { background: var(--sleep-dark); color: var(--sleep-accent); }
+  </style>
+</head>
+<body class="love-mode">
+
+  <!-- Top Banner -->
+  <div class="banner">Free shipping on orders over $75 &nbsp;·&nbsp; New arrivals every Friday</div>
+
+  <header>
+    <!-- Logo -->
+    <div class="logo-container">
+      <div class="logo-symbol">
+        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Heart left half -->
+          <path d="M40 62 C40 62 10 45 10 28 C10 18 18 12 28 14 C34 15 38 20 40 24" fill="#c4846a" opacity="0.9"/>
+          <!-- Moon right half -->
+          <path d="M40 24 C42 20 46 15 52 14 C62 12 70 18 70 28 C70 45 40 62 40 62" fill="#1a2340" opacity="0.9"/>
+          <!-- Infinity divider hint -->
+          <ellipse cx="40" cy="38" rx="2" ry="12" fill="white" opacity="0.6"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <span class="love-part">love</span>
+        <span class="infinity">∞</span>
+        <span class="sleep-part">sleep</span>
+      </div>
+      <div class="logo-tagline">Two Sides &nbsp;·&nbsp; One You</div>
+    </div>
+
+    <!-- TOGGLE -->
+    <div class="toggle-section">
+      <span class="toggle-label love">Love</span>
+      <div class="toggle-track" id="toggleTrack" onclick="toggleMode()" role="switch" aria-checked="false" tabindex="0">
+        <div class="toggle-thumb" id="toggleThumb"></div>
+      </div>
+      <span class="toggle-label sleep">Sleep</span>
+    </div>
+
+    <!-- NAV -->
+    <nav>
+      <a href="#">Collection</a>
+      <a href="#">About</a>
+      <a href="#">Gifting</a>
+      <a href="#">Journal</a>
+      <a href="#">Cart (0)</a>
+    </nav>
+  </header>
+
+  <!-- ═══════════════════ LOVE MODE ═══════════════════ -->
+  <div class="mode-content active" id="loveContent">
+    <div class="hero">
+      <div class="mode-title">Sensual by Design,<br/>Intimate by Nature</div>
+      <div class="mode-subtitle">The Love Collection · Sensual Sleepwear</div>
+      <button class="hero-btn">Explore the Collection</button>
+    </div>
+
+    <section class="products-section">
+      <div class="section-heading">The Love Edit</div>
+      <div class="section-rule"></div>
+      <div class="products-grid">
+
+        <div class="product-card">
+          <div class="product-img">🌹</div>
+          <div class="product-info">
+            <div class="product-name">Rose Silk Chemise</div>
+            <div class="product-desc">100% mulberry silk, bias-cut for a fluid drape that moves with you</div>
+            <div class="product-price">$148</div>
+            <button class="add-to-cart">Add to Cart</button>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <div class="product-img">✨</div>
+          <div class="product-info">
+            <div class="product-name">Lace-Trim Cami Set</div>
+            <div class="product-desc">Delicate French lace trim, satin camisole & shorts for warm nights</div>
+            <div class="product-price">$124</div>
+            <button class="add-to-cart">Add to Cart</button>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <div class="product-img">🕯️</div>
+          <div class="product-info">
+            <div class="product-name">Velvet Robe</div>
+            <div class="product-desc">Plush crushed velvet in dusty rose, full-length with satin lining</div>
+            <div class="product-price">$189</div>
+            <button class="add-to-cart">Add to Cart</button>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <div class="product-img">💋</div>
+          <div class="product-info">
+            <div class="product-name">Mauve Slip Dress</div>
+            <div class="product-desc">Vintage-inspired slip with adjustable spaghetti straps, thigh-high slit</div>
+            <div class="product-price">$136</div>
+            <button class="add-to-cart">Add to Cart</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <!-- ═══════════════════ SLEEP MODE ═══════════════════ -->
+  <div class="mode-content" id="sleepContent">
+    <div class="hero">
+      <div class="mode-title">Rest Deep,<br/>Dream Freely</div>
+      <div class="mode-subtitle">The Sleep Collection · Comfort Sleepwear</div>
+      <button class="hero-btn">Explore the Collection</button>
+    </div>
+
+    <section class="products-section">
+      <div class="section-heading">The Sleep Edit</div>
+      <div class="section-rule"></div>
+      <div class="products-grid">
+
+        <div class="product-card">
+          <div class="product-img">🌙</div>
+          <div class="product-info">
+            <div class="product-name">Cloud Fleece Set</div>
+            <div class="product-desc">Ultra-soft micro-fleece long-sleeve top & wide-leg pants, cloud weight</div>
+            <div class="product-price">$96</div>
+            <button class="add-to-cart">Add to Cart</button>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <div class="product-img">⭐</div>
+          <div class="product-info">
+            <div class="product-name">Navy Flannel PJ Set</div>
+            <div class="product-desc">Brushed cotton flannel with classic plaid, button-up top & elastic waist</div>
+            <div class="product-price">$88</div>
+            <button class="add-to-cart">Add to Cart</button>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <div class="product-img">🛌</div>
+          <div class="product-info">
+            <div class="product-name">Bamboo Lounge Set</div>
+            <div class="product-desc">Temperature-regulating bamboo jersey, loose fit for deep, uninterrupted sleep</div>
+            <div class="product-price">$112</div>
+            <button class="add-to-cart">Add to Cart</button>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <div class="product-img">🌊</div>
+          <div class="product-info">
+            <div class="product-name">Waffle Knit Onesie</div>
+            <div class="product-desc">Cozy full-coverage waffle knit with kangaroo pocket in midnight navy</div>
+            <div class="product-price">$102</div>
+            <button class="add-to-cart">Add to Cart</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    &copy; 2026 Love to Sleep &nbsp;·&nbsp; Two Sides, One You &nbsp;·&nbsp; lovetosleep.com
+  </footer>
+
+  <script>
+    let isLoveMode = true;
+
+    function toggleMode() {
+      isLoveMode = !isLoveMode;
+      const body = document.body;
+      const loveContent = document.getElementById('loveContent');
+      const sleepContent = document.getElementById('sleepContent');
+      const track = document.getElementById('toggleTrack');
+
+      if (isLoveMode) {
+        body.className = 'love-mode';
+        loveContent.classList.add('active');
+        sleepContent.classList.remove('active');
+        track.setAttribute('aria-checked', 'false');
+      } else {
+        body.className = 'sleep-mode';
+        sleepContent.classList.add('active');
+        loveContent.classList.remove('active');
+        track.setAttribute('aria-checked', 'true');
+      }
+    }
+
+    // Keyboard support
+    document.getElementById('toggleTrack').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleMode(); }
+    });
+  </script>
+</body>
+</html>
